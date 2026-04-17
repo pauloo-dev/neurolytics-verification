@@ -1,1 +1,1 @@
-# neurolytics-verification
+# neurolytics
