@@ -906,7 +906,7 @@ window.addEventListener('load', () => {
   const cc = gc('chartContext');
   if(cc) new Chart(cc, {
     type:'doughnut',
-    data:{labels:['Urban','Rural','Semi-Urban','SNE(urban)'],datasets:[{data:[4,4,1,1],backgroundColor:['rgba(78,143,202,.7)','rgba(107,171,107,.7)','rgba(212,168,67,.7)','rgba(196,91,91,.7)'],borderColor:['#4e8fca','#6bab6b','#d4a843','#c45b5b'],borderWidth:1}]},
+    data:{labels:['Urban','Rural','Semi-Urban','Urban(SNE)'],datasets:[{data:[4,4,1,1],backgroundColor:['rgba(78,143,202,.7)','rgba(107,171,107,.7)','rgba(212,168,67,.7)','rgba(196,91,91,.7)'],borderColor:['#4e8fca','#6bab6b','#d4a843','#c45b5b'],borderWidth:1}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:10,padding:10,font:{size:11}}}}}
   });
 
