@@ -2,19 +2,9 @@
 
 > **Beyond the Blueprint: Exploring Teachers' Adaptive Agency in Maximising Inclusive Utility under Kenya's CBC**
 >
-> An interactive, browser-based qualitative data analysis environment.
-
 ---
 
-## 📌 Overview
 
-**QualSight** is a fully responsive, single-file HTML/CSS/JS application that replicates and extends the functionality of professional qualitative analysis software (NVivo, MAXQDA, Atlas.ti) entirely in the browser — no installation, no backend, no dependencies beyond Chart.js.
-
-It was built as the analytic companion to a study investigating how primary school teachers in Nakuru County, Kenya exercise *adaptive agency* to include neurodivergent learners within the country's Competency-Based Education (CBE) framework. The tool presents the complete findings of a nine-participant reflexive thematic analysis, grounded in Braun & Clarke's (2006) six-phase approach with an abductive orientation.
-
-The file is designed to be shared as a **standalone research artefact** — open `qualsight_responsive.html` in any modern browser and the full analysis is immediately accessible.
-
----
 
 ## 🎓 Research Context
 
@@ -96,19 +86,6 @@ Seven reflexively generated themes, each with:
 
 ---
 
-## 📱 Responsive Design
-
-QualSight is fully responsive across all screen sizes:
-
-| Screen | Sidebar Behaviour |
-|---|---|
-| **Desktop (900px+)** | Full sidebar with labels; collapse button (◀) shrinks to icon-only rail |
-| **Tablet (601–900px)** | Auto-collapses to slim icon-only rail; hamburger (☰) in topbar |
-| **Mobile (≤600px)** | Sidebar hidden off-screen; hamburger opens full overlay drawer with backdrop |
-
-All typography uses CSS `clamp()` for fluid scaling. Grids use `auto-fit` with `minmax()`. Tables are horizontally scrollable with touch momentum. No layout breaks at any viewport width.
-
----
 
 ## 🛠️ Technical Stack
 
@@ -122,14 +99,10 @@ All typography uses CSS `clamp()` for fluid scaling. Grids use `auto-fit` with `
 | **Interactivity** | Vanilla JavaScript — no frameworks, no build tools |
 | **Distribution** | Single self-contained `.html` file (~140KB) |
 
-The tool runs entirely client-side. There is no server, no database, no API calls (except Google Fonts CDN). The complete quote database, codebook, and chart data are embedded directly in the file as JavaScript objects.
 
 ---
 
 ## 🚀 Usage
-
-### View immediately
-Simply open `qualsight_responsive.html` in any modern browser. No installation required.
 
 ### Embed in a portfolio or research site
 ```html
@@ -171,10 +144,6 @@ qualsight/
 └── README.md                   # ← This file
 ```
 
-The entire application is intentionally a single file to maximise portability — drop it anywhere and it works.
-
----
-
 ## 🔬 Key Findings (Summary)
 
 Seven themes were generated from nine semi-structured interviews with teachers across urban, peri-urban, and rural public primary schools in Nakuru County, Kenya:
@@ -211,18 +180,6 @@ Seven themes were generated from nine semi-structured interviews with teachers a
 
 ---
 
-## ⚖️ Ethics & Data Protection
-
-This study received ethical approval from the **University of Glasgow School of Education Research Ethics Committee** (Application submitted November 2025; data collection from February 2026).
-
-- All participants provided informed verbal and written consent
-- No identifiable information appears in this tool — participants are pseudonymised (T01–T09), schools and locations are masked
-- All raw audio and transcripts are stored on encrypted University of Glasgow OneDrive/SharePoint; accessible only to researcher and supervisor
-- All personal data and research data will be destroyed by 31/12/2026 per the approved data management plan
-- Conducted in accordance with BERA (2018) ethical guidelines and University of Glasgow GDPR obligations
-
----
-
 
 ## 📄 Licence
 
@@ -233,7 +190,4 @@ The **research data, quotes, analysis, and written content** remain the intellec
 ---
 
 <div align="center">
-
-*QualSight was built with care for the nine teachers in Nakuru County who gave their time, their honesty, and their stories. Their voices are this tool.*
-
 </div>
