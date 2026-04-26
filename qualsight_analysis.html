@@ -282,6 +282,7 @@ table.ct tr:hover td{background:rgba(255,255,255,.015)}
   .bx{display:none}
   .panel{padding:12px}
 }
+@keyframes pulse{0%,100%{background:rgba(74,171,138,.08)}50%{background:rgba(74,171,138,.18)}}
 </style>
 </head>
 <body>
@@ -313,7 +314,7 @@ table.ct tr:hover td{background:rgba(255,255,255,.015)}
     <div class="nl">Retrieval</div>
     <div class="ni" onclick="show('search',this)"><span class="ico">⌕</span><span class="nt">Search &amp; Filter</span></div>
     <div class="nl">Member Checking</div>
-    <div class="ni" onclick="window.open('member_checking.html','_blank')"><span class="ico">◎</span><span class="nt">Open Form ↗</span></div>
+    <div class="ni" onclick="window.open('member_checking.html','_blank')" style="color:#4aab8a;border-left:3px solid #4aab8a;background:rgba(74,171,138,.08);animation:pulse 2s infinite"><span class="ico" style="color:#4aab8a">⚑</span><span class="nt" style="font-weight:600">Action Required ↗</span></div>
   </div>
   <div class="sfoot">Beatrice W. Mungai · MSc Education<br>University of Glasgow · n=9</div>
   <div class="slim-btn" id="stog" onclick="toggleSlim()">◀</div>
