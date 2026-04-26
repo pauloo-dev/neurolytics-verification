@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QualSight Analytics | Beyond the Blueprint | 2812274M</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#0a0d14;--surface:#111622;--s2:#181f30;--s3:#1f2840;--s4:#252e42;
+  --border:#2a3348;--border2:#364260;
+  --gold:#d4a843;--gold2:#e8c06a;--gold-dim:rgba(212,168,67,.13);
+  --cream:#f0ead6;--cream2:rgba(240,234,214,.75);
+  --text:#e2ddd4;--tdim:#8a9ab5;--tmut:#4e5e78;
+  --a1:#4e8fca;--a2:#6b5bab;--a3:#4aab8a;--a4:#c45b5b;--a5:#d47843;--a6:#6bab6b;--a7:#ab6b9a;
+  --r:9px;--r2:6px;
+  --sb:240px;--sb-s:54px;--tb:54px;
+  --fxs:clamp(9px,1.7vw,11px);--fsm:clamp(11px,1.9vw,13px);--fb:clamp(12px,2.1vw,14px);
+  --fmd:clamp(13px,2.4vw,16px);--flg:clamp(16px,3vw,21px);--fxl:clamp(20px,4.5vw,28px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:var(--fb);overflow-x:hidden;height:100vh}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+#shell{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+#sb{width:var(--sb);min-width:var(--sb);background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;transition:width .2s,min-width .2s,transform .2s;
+  height:100vh;overflow:hidden;z-index:100;flex-shrink:0}
+#sb.slim{width:var(--sb-s);min-width:var(--sb-s)}
+#sb.slim .nt,#sb.slim .nl,#sb.slim .sfoot,#sb.slim .logo-w{display:none}
+#sb.slim .ni{justify-content:center;padding:11px 0;border-left-width:3px}
+#sb.slim .ni .ico{font-size:17px;width:auto}
+#sb.slim .logo-a{justify-content:center;padding:14px 0}
+.logo-a{padding:18px 16px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:default}
+.logo-ico{font-size:19px;color:var(--gold);flex-shrink:0}
+.logo-w .lw1{font-family:'Playfair Display',serif;font-size:var(--fmd);color:var(--gold);letter-spacing:-.3px}
+.logo-w .lw2{font-size:var(--fxs);color:var(--tmut);line-height:1.4;margin-top:1px}
+.sb-nav{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 0}
+.nl{font-size:var(--fxs);letter-spacing:1.5px;text-transform:uppercase;color:var(--tmut);padding:8px 16px 3px;font-weight:600;white-space:nowrap}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;color:var(--tdim);
+  font-size:var(--fsm);border-left:3px solid transparent;transition:all .15s;white-space:nowrap}
+.ni:hover{color:var(--text);background:var(--s2)}
+.ni.active{color:var(--gold);background:var(--gold-dim);border-left-color:var(--gold)}
+.ni.sub{padding-left:28px;font-size:var(--fxs)}
+.ni .ico{font-size:14px;width:17px;text-align:center;flex-shrink:0}
+.sfoot{padding:12px 16px;border-top:1px solid var(--border);font-size:var(--fxs);color:var(--tmut);line-height:1.6}
+.slim-btn{cursor:pointer;padding:9px 0;display:flex;justify-content:center;color:var(--tmut);
+  border-top:1px solid var(--border);font-size:13px;flex-shrink:0}
+.slim-btn:hover{color:var(--gold)}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#tb{height:var(--tb);min-height:var(--tb);background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 20px;gap:10px;flex-shrink:0}
+.tb-t{font-family:'Playfair Display',serif;font-size:var(--fsm);color:var(--cream);font-weight:600;line-height:1.25;min-width:0}
+.tb-s{font-size:var(--fxs);color:var(--tmut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bx{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:var(--fxs);font-weight:600;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
+.bx-g{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(212,168,67,.3)}
+.bx-b{background:rgba(78,143,202,.1);color:var(--a1);border:1px solid rgba(78,143,202,.25)}
+.bx-gr{background:rgba(74,171,138,.1);color:var(--a3);border:1px solid rgba(74,171,138,.25)}
+
+/* PANELS */
+.panel{display:none;flex:1;overflow-y:auto;padding:clamp(14px,3vw,26px)}
+.panel.on{display:block}
+.pt{font-family:'Playfair Display',serif;font-size:var(--fxl);color:var(--cream);margin-bottom:6px;font-weight:600;line-height:1.2}
+.ps{font-size:var(--fsm);color:var(--tdim);line-height:1.65;margin-bottom:20px;max-width:700px}
+.ph3{font-family:'Playfair Display',serif;font-size:var(--fmd);color:var(--cream);margin-bottom:8px;font-weight:600}
+.ph4{font-size:var(--fxs);font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--tdim);margin-bottom:10px}
+.dv{height:1px;background:var(--border);margin:14px 0}
+.blank{height:1px;margin:0 0 12px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:clamp(13px,2.5vw,20px)}
+.card2{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:clamp(12px,2vw,16px)}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px;margin-bottom:16px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-bottom:16px}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:11px;margin-bottom:16px}
+.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+
+/* STAT CARDS */
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:clamp(13px,2.5vw,18px);position:relative;overflow:hidden}
+.sc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sc.sg::after{background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.sc.sb::after{background:var(--a1)}.sc.sr::after{background:var(--a4)}
+.sc.sgr::after{background:var(--a3)}.sc.sp::after{background:var(--a2)}
+.sv{font-family:'Playfair Display',serif;font-size:clamp(26px,5vw,36px);color:var(--cream);font-weight:700;line-height:1}
+.sl{font-size:var(--fxs);color:var(--tmut);margin-top:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.sn{font-size:var(--fxs);color:var(--tdim);margin-top:3px}
+
+/* CHARTS */
+.ch{position:relative;height:clamp(180px,28vw,240px)}
+.ch-sm{position:relative;height:clamp(140px,22vw,180px)}
+
+/* GAUGE */
+.gauges{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:6px 0}
+.gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:90px}
+.gauge-canvas{width:90px!important;height:60px!important}
+.gauge-label{font-size:var(--fxs);color:var(--tdim);text-align:center;font-weight:500}
+.gauge-val{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);font-weight:500}
+
+/* IU FRONTIER */
+.iu-hero{background:linear-gradient(135deg,rgba(212,168,67,.06) 0%,rgba(74,171,138,.04) 100%);
+  border:1px solid rgba(212,168,67,.2);border-radius:var(--r);padding:20px;margin-bottom:16px;
+  position:relative;overflow:hidden}
+.iu-hero::before{content:'3P';position:absolute;right:20px;top:50%;transform:translateY(-50%);
+  font-family:'Playfair Display',serif;font-size:clamp(60px,12vw,120px);color:rgba(212,168,67,.04);
+  font-weight:700;pointer-events:none;line-height:1}
+.iu-title{font-family:'Playfair Display',serif;font-size:clamp(13px,2.5vw,16px);color:var(--gold);font-weight:600;margin-bottom:4px}
+.iu-sub{font-size:var(--fxs);color:var(--tdim);line-height:1.6;margin-bottom:14px;max-width:600px}
+.iu-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.iu-p{background:rgba(0,0,0,.2);border-radius:var(--r2);padding:12px 14px;border:1px solid var(--border)}
+.iu-p-name{font-family:'Playfair Display',serif;font-size:var(--fmd);font-weight:700;margin-bottom:5px}
+.iu-p-def{font-size:var(--fxs);color:var(--tdim);line-height:1.55;margin-bottom:8px}
+.iu-bar{height:5px;border-radius:3px;background:var(--border);overflow:hidden;margin-bottom:3px}
+.iu-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.iu-stat{font-family:'IBM Plex Mono',monospace;font-size:var(--fxs);font-weight:500}
+
+/* RQ BOXES */
+.rqb{border-left:3px solid var(--a1);border-radius:0 var(--r2) var(--r2) 0;padding:10px 14px;
+  margin-bottom:10px;font-size:var(--fsm);color:var(--cream2);line-height:1.55;background:rgba(78,143,202,.05)}
+.rqb .rql{color:var(--a1);font-weight:600;font-size:var(--fxs);display:block;margin-bottom:3px;
+  text-transform:uppercase;letter-spacing:.5px}
+.rqb.r2{border-left-color:var(--a3);background:rgba(74,171,138,.05)}
+.rqb.r2 .rql{color:var(--a3)}
+.rqb.r3{border-left-color:var(--a2);background:rgba(107,91,171,.05)}
+.rqb.r3 .rql{color:var(--a2)}
+
+/* QUOTE CARDS */
+.qc{background:var(--s2);border:1px solid var(--border);border-left:3px solid var(--gold);
+  border-radius:var(--r);padding:clamp(12px,2vw,16px);margin-bottom:9px;transition:border-color .2s}
+.qc:hover{border-left-color:var(--gold2)}
+.qt{font-style:italic;color:var(--cream);line-height:1.65;font-size:var(--fsm);margin-bottom:9px}
+.qm{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.qpid{font-family:'IBM Plex Mono',monospace;font-size:var(--fxs);font-weight:500;padding:2px 8px;
+  border-radius:4px;border:1px solid;white-space:nowrap}
+.qtag{font-size:var(--fxs);padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.06);
+  color:var(--tdim);font-weight:500;white-space:nowrap}
+.qctx{font-size:var(--fxs);color:var(--tmut);font-style:italic}
+
+/* PID COLORS */
+.T01{border-color:#4e8fca;color:#4e8fca;background:rgba(78,143,202,.08)}
+.T02{border-color:#4aab8a;color:#4aab8a;background:rgba(74,171,138,.08)}
+.T03{border-color:#d47843;color:#d47843;background:rgba(212,120,67,.08)}
+.T04{border-color:#6b5bab;color:#6b5bab;background:rgba(107,91,171,.08)}
+.T05{border-color:#c45b5b;color:#c45b5b;background:rgba(196,91,91,.08)}
+.T06{border-color:#d4a843;color:#d4a843;background:rgba(212,168,67,.08)}
+.T07{border-color:#6bab6b;color:#6bab6b;background:rgba(107,171,107,.08)}
+.T08{border-color:#ab6b9a;color:#ab6b9a;background:rgba(171,107,154,.08)}
+.T09{border-color:#5a9ab5;color:#5a9ab5;background:rgba(90,154,181,.08)}
+
+/* THEME CARDS */
+.thc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:clamp(15px,2.5vw,20px);margin-bottom:14px}
+.th-h{display:flex;align-items:flex-start;gap:11px;margin-bottom:11px}
+.th-num{width:33px;height:33px;min-width:33px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-family:'Playfair Display',serif;font-size:var(--fsm);font-weight:700;flex-shrink:0}
+.th-n{font-family:'Playfair Display',serif;font-size:clamp(13px,2.3vw,15px);color:var(--cream);font-weight:600;line-height:1.3}
+.th-l{font-size:var(--fxs);color:var(--tmut);margin-top:3px}
+.th-d{font-size:var(--fsm);color:var(--tdim);line-height:1.65;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.chip{font-size:var(--fxs);padding:3px 8px;border-radius:10px;font-weight:600}
+.th-tog{font-size:var(--fsm);cursor:pointer;font-weight:500;display:flex;align-items:center;gap:4px;user-select:none}
+.th-qp{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.th-qp.open{display:block}
+
+/* CODEBOOK */
+.cg{margin-bottom:20px}
+.cg-h{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:var(--r);
+  margin-bottom:8px;background:var(--s2);border-left:3px solid var(--gold)}
+.cg-t{font-family:'Playfair Display',serif;font-size:var(--fsm);color:var(--cream);font-weight:600}
+.cg-c{font-size:var(--fxs);color:var(--tdim);margin-left:auto}
+.ci{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
+  padding:11px 13px;margin-bottom:6px;margin-left:clamp(0px,2vw,14px)}
+.cn{font-family:'IBM Plex Mono',monospace;font-size:var(--fxs);font-weight:500;color:var(--gold);margin-bottom:4px;word-break:break-all}
+.cd{font-size:var(--fsm);color:var(--tdim);line-height:1.5;margin-bottom:6px}
+.cfl{display:flex;align-items:center;gap:8px;margin-top:6px}
+.cfb{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.cff{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.cfn{font-size:var(--fxs);color:var(--tmut);font-family:'IBM Plex Mono',monospace;width:26px;text-align:right}
+.clv{font-size:var(--fxs);padding:1px 6px;border-radius:3px;font-weight:600}
+.lsem{background:rgba(74,171,138,.12);color:var(--a3)}.llat{background:rgba(107,91,171,.12);color:var(--a2)}
+
+/* MATRIX */
+.mtw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.mx{border-collapse:collapse;width:100%;min-width:560px}
+table.mx th,table.mx td{padding:clamp(6px,1.5vw,9px) clamp(7px,1.5vw,11px);text-align:center;
+  border-bottom:1px solid var(--border);font-size:var(--fxs)}
+table.mx th{font-weight:600;color:var(--tdim);text-transform:uppercase;letter-spacing:.4px;
+  background:var(--s2);white-space:nowrap}
+table.mx th.rh{text-align:left;min-width:100px}
+table.mx td.rl{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:var(--fxs);color:var(--cream);font-weight:500}
+table.mx td.rs{font-size:9px;color:var(--tmut)}
+.dot{width:19px;height:19px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700}
+.dh{background:rgba(212,168,67,.85);color:#000}.dm{background:rgba(212,168,67,.38);color:var(--gold)}.dl{background:rgba(212,168,67,.1);color:var(--tmut)}
+
+/* VERSION CARDS */
+.vc{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:15px 17px;margin-bottom:11px}
+.vc-h{display:flex;align-items:center;gap:10px;margin-bottom:9px;flex-wrap:wrap}
+.vb{font-family:'IBM Plex Mono',monospace;font-size:var(--fxs);font-weight:600;padding:3px 10px;
+  border-radius:20px;border:1px solid}
+.v1{border-color:var(--a4);color:var(--a4);background:rgba(196,91,91,.07)}
+.v2{border-color:var(--a5);color:var(--a5);background:rgba(212,120,67,.07)}
+.vf{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.vd{font-size:var(--fxs);color:var(--tdim);line-height:1.6;margin-bottom:10px}
+.cchips{display:flex;flex-wrap:wrap;gap:4px}
+.cchip{font-size:var(--fxs);padding:2px 7px;border-radius:8px;font-weight:600}
+
+/* CODING TABLE */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.ct{border-collapse:collapse;width:100%;min-width:620px}
+table.ct th{background:var(--s2);font-size:var(--fxs);font-weight:600;color:var(--tdim);
+  text-transform:uppercase;letter-spacing:.4px;padding:7px 9px;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap}
+table.ct td{padding:7px 9px;border-bottom:1px solid var(--border);font-size:var(--fxs);vertical-align:top}
+table.ct tr:hover td{background:rgba(255,255,255,.015)}
+.ext{font-style:italic;color:var(--cream);line-height:1.55;font-size:var(--fxs)}
+.ctag{font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.07);color:var(--tdim);font-weight:500;white-space:nowrap}
+.thtag{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap}
+.mnote{font-size:9px;color:var(--tmut);line-height:1.5;max-width:190px}
+
+/* ANALYTIC MEMO */
+.am{background:rgba(212,168,67,.05);border:1px solid rgba(212,168,67,.18);border-radius:var(--r);padding:13px 15px;margin-bottom:9px}
+.am-d{font-family:'IBM Plex Mono',monospace;font-size:var(--fxs);color:var(--gold);margin-bottom:5px;font-weight:500}
+.am-t{font-size:var(--fsm);color:var(--tdim);line-height:1.65}
+.am-t strong{color:var(--gold);font-weight:600}
+
+/* INFO ROWS */
+.ir{display:flex;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);font-size:var(--fsm)}
+.ik{color:var(--tmut);font-weight:500;min-width:clamp(80px,14vw,108px);flex-shrink:0}
+.iv{color:var(--cream)}
+
+/* SEARCH */
+.sfb{display:flex;gap:7px;margin-bottom:15px;flex-wrap:wrap}
+.si{flex:1;min-width:150px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:8px 12px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:var(--fsm);outline:none;transition:border-color .2s}
+.si:focus{border-color:var(--gold)}
+.ss{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:8px 12px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:var(--fsm);
+  outline:none;cursor:pointer;min-width:120px}
+.ss option{background:var(--s2)}
+.src{font-size:var(--fxs);color:var(--tmut);margin-bottom:9px}
+.hi{background:rgba(212,168,67,.25);color:var(--gold2);border-radius:2px;padding:0 2px}
+
+/* TAGS */
+.tag-u{background:rgba(78,143,202,.14);color:var(--a1)}.tag-r{background:rgba(107,171,107,.14);color:var(--a6)}
+.tag-su{background:rgba(212,168,67,.14);color:var(--gold)}.tag-sne{background:rgba(196,91,91,.14);color:var(--a4)}
+.etag{font-size:var(--fxs);padding:2px 8px;border-radius:20px;font-weight:600}
+
+/* MC LINK CARD */
+.mc-link{background:linear-gradient(135deg,rgba(212,168,67,.08),rgba(74,171,138,.05));
+  border:1px solid rgba(212,168,67,.3);border-radius:var(--r);padding:18px 20px;margin-bottom:16px;
+  display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .2s}
+.mc-link:hover{border-color:var(--gold)}
+.mc-link-ico{font-size:28px;flex-shrink:0}
+.mc-link-t{font-family:'Playfair Display',serif;font-size:var(--fmd);color:var(--cream);font-weight:600;margin-bottom:3px}
+.mc-link-s{font-size:var(--fxs);color:var(--tdim)}
+.mc-link-btn{margin-left:auto;background:var(--gold);color:#000;font-weight:700;font-size:var(--fxs);
+  padding:7px 14px;border-radius:var(--r2);white-space:nowrap;flex-shrink:0}
+
+/* MOBILE */
+#hm{display:none;background:none;border:none;color:var(--tdim);cursor:pointer;font-size:19px;padding:5px;flex-shrink:0}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:90;backdrop-filter:blur(2px)}
+@media(max-width:860px){
+  #sb{position:fixed;left:0;top:0;height:100%;z-index:200;transform:translateX(-100%);
+    width:var(--sb)!important;min-width:var(--sb)!important}
+  #sb.mo{transform:translateX(0)}
+  #sb.slim .nt,#sb.slim .nl,#sb.slim .sfoot,#sb.slim .logo-w{display:block!important}
+  #sb.slim .ni{justify-content:flex-start;padding:8px 16px}
+  #sb.slim .logo-a{justify-content:flex-start;padding:18px 16px 13px}
+  .slim-btn{display:none}
+  #hm{display:flex}
+}
+@media(max-width:540px){
+  .g4{grid-template-columns:1fr 1fr}
+  .sfb{flex-direction:column}
+  .ss,.si{width:100%;min-width:0}
+  .tb-s{display:none}
+  .bx{display:none}
+  .panel{padding:12px}
+}
+</style>
+</head>
+<body>
+<div id="ov" onclick="closeMob()"></div>
+<div id="shell">
+
+<!-- SIDEBAR -->
+<nav id="sb">
+  <div class="logo-a">
+    <span class="logo-ico">◈</span>
+    <div class="logo-w">
+      <div class="lw1">QualSight Analytics</div>
+      <div class="lw2">Chapter 4 Instrument<br>2812274M · Nakuru 2026</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="nl">Overview</div>
+    <div class="ni active" onclick="show('dash',this)"><span class="ico">◈</span><span class="nt">Dashboard</span></div>
+    <div class="nl">Themes</div>
+    <div class="ni" onclick="show('themes',this)"><span class="ico">◎</span><span class="nt">Themes &amp; Quotes</span></div>
+    <div class="ni" onclick="show('codebook',this)"><span class="ico">≣</span><span class="nt">Codebook</span></div>
+    <div class="ni" onclick="show('matrix',this)"><span class="ico">⊞</span><span class="nt">Participant Matrix</span></div>
+    <div class="ni" onclick="show('map',this)"><span class="ico">◐</span><span class="nt">Thematic Map</span></div>
+    <div class="nl">Audit Trail</div>
+    <div class="ni" onclick="show('v1',this)"><span class="ico">①</span><span class="nt">Codebook v1 (Open)</span></div>
+    <div class="ni" onclick="show('v2',this)"><span class="ico">②</span><span class="nt">Codebook v2 (Focused)</span></div>
+    <div class="ni" onclick="show('memos',this)"><span class="ico">✎</span><span class="nt">Analytic Memos</span></div>
+    <div class="ni" onclick="show('coding',this)"><span class="ico">▦</span><span class="nt">Coding Spreadsheet</span></div>
+    <div class="nl">Retrieval</div>
+    <div class="ni" onclick="show('search',this)"><span class="ico">⌕</span><span class="nt">Search &amp; Filter</span></div>
+    <div class="nl">Member Checking</div>
+    <div class="ni" onclick="window.open('member_checking.html','_blank')"><span class="ico">◎</span><span class="nt">Open Form ↗</span></div>
+  </div>
+  <div class="sfoot">Beatrice W. Mungai · MSc Education<br>University of Glasgow · n=9</div>
+  <div class="slim-btn" id="stog" onclick="toggleSlim()">◀</div>
+</nav>
+
+<div id="main">
+<div id="tb">
+  <button id="hm" onclick="openMob()">☰</button>
+  <div style="min-width:0;flex:1">
+    <div class="tb-t">Beyond the Blueprint: Teachers' Adaptive Agency in CBE Kenya</div>
+    <div class="tb-s">Reflexive Thematic Analysis · Braun &amp; Clarke (2006) · n=9 · Nakuru County</div>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:5px;flex-shrink:0">
+    <span class="bx bx-g">7 Themes</span>
+    <span class="bx bx-b">34 Codes</span>
+    <span class="bx bx-gr">n=9</span>
+  </div>
+</div>
+
+<!-- =========== DASHBOARD =========== -->
+<div id="p-dash" class="panel on">
+  <div class="pt">Analysis Dashboard</div>
+  <div class="ps">Reflexive thematic analysis of nine semi-structured interviews with primary teachers in Nakuru County, Kenya, exploring adaptive agency for neurodivergent learners under CBE.</div>
+
+  <!-- RQs -->
+  <div class="rqb mb12"><span class="rql">Research Question 1</span>How do mainstream primary teachers in Nakuru County assemble and deploy low-cost adaptation ensembles to support neurodivergent learners under CBE, and what pedagogical reasoning shapes those in-the-moment choices?</div>
+  <div class="rqb r2 mb12"><span class="rql">Research Question 2</span>How do teachers evaluate the inclusive utility (presence, participation, and progression) of their adaptations, and what trade-offs influence these judgements?</div>
+  <div class="rqb r3 mb16"><span class="rql">Research Question 3</span>To what extent do within-school collaboration practices and wider ecological conditions enable or constrain teachers' adaptive agency under CBE?</div>
+
+  <!-- STATS -->
+  <div class="g4">
+    <div class="sc sg"><div class="sv">9</div><div class="sl">Participants</div><div class="sn">T01–T09 · Nakuru County</div></div>
+    <div class="sc sb"><div class="sv">7</div><div class="sl">Themes</div><div class="sn">Reflexive TA · Abductive</div></div>
+    <div class="sc sgr"><div class="sv">34</div><div class="sl">Codes</div><div class="sn">Semantic + latent levels</div></div>
+    <div class="sc sp"><div class="sv">~9h</div><div class="sl">Data</div><div class="sn">60–75 min per interview</div></div>
+  </div>
+
+  <!-- IU HERO -->
+  <div class="iu-hero">
+    <div class="iu-title">Inclusive Utility (3P) — Central Construct</div>
+    <div class="iu-sub">Derived from the expected utility framework in financial economics: inclusive utility U = f(Presence, Participation, Progression), where each P is a measurable dimension of educational access. Teachers act as adaptive agents optimising utility subject to structural constraints — the "feasible frontier" is the set of achievable 3P combinations given class size, resources, and policy conditions.</div>
+    <div class="iu-row">
+      <div class="iu-p">
+        <div class="iu-p-name" style="color:var(--a1)">Presence</div>
+        <div class="iu-p-def">Physical attendance + affective belonging. Precondition for all else. Near-universal in urban; fragile in rural due to farm labour and poverty.</div>
+        <div class="iu-bar"><div class="iu-fill" style="width:91%;background:var(--a1)"></div></div>
+        <div class="iu-stat" style="color:var(--a1)">High across sample (9/9 address)</div>
+      </div>
+      <div class="iu-p">
+        <div class="iu-p-name" style="color:var(--a3)">Participation</div>
+        <div class="iu-p-def">Active engagement with content, materials, peers. Presence does not guarantee participation. Belonging is the mediating variable.</div>
+        <div class="iu-bar"><div class="iu-fill" style="width:82%;background:var(--a3)"></div></div>
+        <div class="iu-stat" style="color:var(--a3)">Strong across sample (9/9 address)</div>
+      </div>
+      <div class="iu-p">
+        <div class="iu-p-name" style="color:var(--gold)">Progression</div>
+        <div class="iu-p-def">Observable forward movement, however small. De-linked from exam scores. Micro-milestones reframe what counts as educational achievement.</div>
+        <div class="iu-bar"><div class="iu-fill" style="width:74%;background:var(--gold)"></div></div>
+        <div class="iu-stat" style="color:var(--gold)">Variable; context-dependent (9/9)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW 1 -->
+  <div class="g2">
+    <div class="card mb16">
+      <div class="ph4">Theme Prevalence Across Participants (n=9)</div>
+      <div class="ch"><canvas id="cFreq"></canvas></div>
+    </div>
+    <div class="card mb16">
+      <div class="ph4">Inclusive Utility by School Context</div>
+      <div class="ch"><canvas id="cIU"></canvas></div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW 2 -->
+  <div class="g3">
+    <div class="card mb16">
+      <div class="ph4">School Context Distribution</div>
+      <div class="ch-sm"><canvas id="cCtx"></canvas></div>
+    </div>
+    <div class="card mb16">
+      <div class="ph4">Code Level Breakdown</div>
+      <div class="ch-sm"><canvas id="cLev"></canvas></div>
+    </div>
+    <div class="card mb16">
+      <div class="ph4">Adaptation Type Frequency</div>
+      <div class="ch-sm"><canvas id(cAdapt"></canvas></div>
+    </div>
+  </div>
+
+  <!-- PARTICIPANT TABLE -->
+  <div class="card mb16">
+    <div class="ph3">Participant Summary</div><div class="dv" style="margin:8px 0 12px"></div>
+    <div class="tw">
+      <table style="width:100%;border-collapse:collapse;font-size:var(--fxs)">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border)">
+            <th style="text-align:left;padding:6px 9px;color:var(--tdim);font-weight:600;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">ID</th>
+            <th style="text-align:left;padding:6px 9px;color:var(--tdim);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Context</th>
+            <th style="text-align:left;padding:6px 9px;color:var(--tdim);font-weight:600;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap">Grade</th>
+            <th style="text-align:center;padding:6px 9px;color:var(--tdim);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Exp.</th>
+            <th style="text-align:center;padding:6px 9px;color:var(--tdim);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Class</th>
+            <th style="text-align:left;padding:6px 9px;color:var(--tdim);font-weight:600;text-transform:uppercase;letter-spacing:.4px">SEN Profile</th>
+          </tr>
+        </thead>
+        <tbody id="ptab"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- METHOD + LENSES -->
+  <div class="g2">
+    <div class="card">
+      <div class="ph4">Methodological Framework</div>
+      <div class="ir"><div class="ik">Design</div><div class="iv">Qualitative, interviews-only</div></div>
+      <div class="ir"><div class="ik">Paradigm</div><div class="iv">Social constructivism</div></div>
+      <div class="ir"><div class="ik">Analysis</div><div class="iv">Reflexive TA (Braun &amp; Clarke, 2006)</div></div>
+      <div class="ir"><div class="ik">Orientation</div><div class="iv">Abductive (inductive + sensitising concepts)</div></div>
+      <div class="ir"><div class="ik">Sampling</div><div class="iv">Maximum-variation purposive + snowball</div></div>
+      <div class="ir"><div class="ik">Platform</div><div class="iv">WhatsApp audio · Virginia (US) to Nakuru (KE)</div></div>
+      <div class="ir" style="border:none"><div class="ik">Transcription</div><div class="iv">MS Word dictate + manual editing</div></div>
+    </div>
+    <div class="card">
+      <div class="ph4">Sensitising Lenses</div>
+      <div class="ir"><div class="ik">Inclusive Utility</div><div class="iv">3P framework (Presence, Participation, Progression)</div></div>
+      <div class="ir"><div class="ik">UDL</div><div class="iv">Flexible engagement, representation, expression</div></div>
+      <div class="ir"><div class="ik">Ecological</div><div class="iv">Bronfenbrenner — micro to macrosystem</div></div>
+      <div class="ir"><div class="ik">VBE / DisCrit</div><div class="iv">Moral economy; intersectional exclusion</div></div>
+      <div class="ir"><div class="ik">Neurodiversity</div><div class="iv">Armstrong (2012) — difference not deficit</div></div>
+      <div class="ir" style="border:none"><div class="ik">Positionality</div><div class="iv">Kenyan / US SPED / UK — triple insider/outsider</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- =========== THEMES =========== -->
+<div id="p-themes" class="panel" id="p-themes">
+  <div class="pt">Themes &amp; Representative Quotes</div>
+  <div class="ps">Seven themes generated through reflexive thematic analysis. Tap any theme to expand its representative quotes from the transcript corpus.</div>
+  <div id="themes-container"></div>
+</div>
+
+<!-- =========== CODEBOOK =========== -->
+<div id="p-codebook" class="panel">
+  <div class="pt">Final Codebook</div>
+  <div class="ps">34 codes across 7 parent categories. Frequency = participants in whose transcript the code appears (max 9). Level = semantic (what teachers said) or latent (what accounts implied).</div>
+  <div id="cb-container"></div>
+</div>
+
+<!-- =========== MATRIX =========== -->
+<div id="p-matrix" class="panel">
+  <div class="pt">Participant x Theme Matrix</div>
+  <div class="ps">Intensity of each theme across all nine participants. High = central and elaborated; Medium = present with some depth; Low = mentioned but not developed.</div>
+  <div class="card mb16">
+    <div class="mtw">
+      <table class="mx">
+        <thead>
+          <tr>
+            <th class="rh">Participant</th>
+            <th>T1<br><span style="font-weight:400;color:var(--tmut)">Adapt.</span></th>
+            <th>T2<br><span style="font-weight:400;color:var(--tmut)">3P</span></th>
+            <th>T3<br><span style="font-weight:400;color:var(--tmut)">Struct.</span></th>
+            <th>T4<br><span style="font-weight:400;color:var(--tmut)">Collab.</span></th>
+            <th>T5<br><span style="font-weight:400;color:var(--tmut)">Agency</span></th>
+            <th>T6<br><span style="font-weight:400;color:var(--tmut)">Neuro.</span></th>
+            <th>T7<br><span style="font-weight:400;color:var(--tmut)">CBE</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="rl"><span class="qpid T01">T01</span><br><span class="rs">Urban·Gr9</span></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dl">○</div></td><td><div class="dot dh">●</div></td></tr>
+          <tr><td class="rl"><span class="qpid T02">T02</span><br><span class="rs">Rural·Jr</span></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td></tr>
+          <tr><td class="rl"><span class="qpid T03">T03</span><br><span class="rs">Rural·Gr6</span></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dl">○</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td></tr>
+          <tr><td class="rl"><span class="qpid T04">T04</span><br><span class="rs">Urban·SNE</span></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dl">○</div></td></tr>
+          <tr><td class="rl"><span class="qpid T05">T05</span><br><span class="rs">Rural·Gr9-10</span></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dl">○</div></td><td><div class="dot dh">●</div></td></tr>
+          <tr><td class="rl"><span class="qpid T06">T06</span><br><span class="rs">Urban·Gr4-6</span></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dl">○</div></td></tr>
+          <tr><td class="rl"><span class="qpid T07">T07</span><br><span class="rs">S-Urban·Gr2</span></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td></tr>
+          <tr><td class="rl"><span class="qpid T08">T08</span><br><span class="rs">Rural·Gr5</span></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td></tr>
+          <tr><td class="rl"><span class="qpid T09">T09</span><br><span class="rs">Urban·Gr1</span></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td><td><div class="dot dh">●</div></td><td><div class="dot dm">◑</div></td><td><div class="dot dh">●</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ph4">Theme Depth by School Context</div><div class="ch"><canvas id="cRadar"></canvas></div></div>
+    <div class="card">
+      <div class="ph4">Analytic Notes on Matrix Patterns</div>
+      <div class="am" style="margin-top:0"><strong>T1 (Adaptation Ensembles)</strong> is universal. Rural teachers rely more heavily on translanguaging and hands-on; urban teachers have broader ICT access.</div>
+      <div class="am"><strong>T3 (Structural Tensions)</strong> is most elaborated in rural and SNE contexts. Urban teachers experience it differently: infrastructure exists but assessment pressure remains high.</div>
+      <div class="am"><strong>T4 (Collaboration)</strong> is dramatically elevated where co-teaching exists (T07, T09). All others operate in informal lateral-only modes.</div>
+      <div class="am"><strong>T6 (Neurodivergence)</strong> is weakest in T01 and T05, both senior school teachers where learner profiles may be less visible or attributed to motivation rather than cognition.</div>
+    </div>
+  </div>
+</div>
+
+<!-- =========== MAP =========== -->
+<div id="p-map" class="panel">
+  <div class="pt">Thematic Map</div>
+  <div class="ps">Relationships between themes, research questions, and the central construct of Inclusive Utility. Built iteratively during the analytic process.</div>
+  <div class="card mb16" style="overflow-x:auto">
+    <svg viewBox="0 0 900 570" xmlns="http://www.w3.org/2000/svg" style="background:#0a0d14;min-width:460px;width:100%;height:auto;border-radius:var(--r2);display:block">
+      <defs>
+        <marker id="ar" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#4e5e78"/></marker>
+        <marker id="arg" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#d4a843"/></marker>
+        <marker id="arb" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#4e8fca"/></marker>
+        <marker id="arr" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><polygon points="0 0,7 2.5,0 5" fill="#c45b5b"/></marker>
+        <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <radialGradient id="cg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(212,168,67,.18)"/><stop offset="100%" stop-color="rgba(212,168,67,.04)"/></radialGradient>
+      </defs>
+      <!-- Central IU -->
+      <ellipse cx="450" cy="285" rx="82" ry="48" fill="url(#cg)" stroke="#d4a843" stroke-width="2" filter="url(#glow)"/>
+      <text x="450" y="278" text-anchor="middle" fill="#d4a843" font-family="Playfair Display" font-size="13" font-weight="700">Inclusive</text>
+      <text x="450" y="294" text-anchor="middle" fill="#d4a843" font-family="Playfair Display" font-size="13" font-weight="700">Utility (3P)</text>
+      <text x="450" y="308" text-anchor="middle" fill="#c8a45a" font-family="IBM Plex Sans" font-size="9">Presence · Participation · Progression</text>
+      <!-- T1 -->
+      <rect x="24" y="60" width="168" height="58" rx="8" fill="rgba(212,168,67,.08)" stroke="rgba(212,168,67,.45)" stroke-width="1.5"/>
+      <text x="108" y="82" text-anchor="middle" fill="#d4a843" font-family="Playfair Display" font-size="11" font-weight="600">T1: Adaptation</text>
+      <text x="108" y="96" text-anchor="middle" fill="#d4a843" font-family="Playfair Display" font-size="11" font-weight="600">Ensembles</text>
+      <text x="108" y="110" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">UDL · Social Constructivism</text>
+      <line x1="192" y1="98" x2="367" y2="263" stroke="#d4a843" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arg)"/>
+      <!-- T2 -->
+      <rect x="708" y="60" width="168" height="58" rx="8" fill="rgba(78,143,202,.08)" stroke="rgba(78,143,202,.45)" stroke-width="1.5"/>
+      <text x="792" y="82" text-anchor="middle" fill="#4e8fca" font-family="Playfair Display" font-size="11" font-weight="600">T2: Inclusive</text>
+      <text x="792" y="96" text-anchor="middle" fill="#4e8fca" font-family="Playfair Display" font-size="11" font-weight="600">Utility in Practice</text>
+      <text x="792" y="110" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">IPAA · 3P Framework</text>
+      <line x1="708" y1="98" x2="533" y2="263" stroke="#4e8fca" stroke-width="1.5" marker-end="url(#arb)"/>
+      <!-- T3 -->
+      <rect x="14" y="252" width="162" height="58" rx="8" fill="rgba(74,171,138,.07)" stroke="rgba(74,171,138,.4)" stroke-width="1.5"/>
+      <text x="95" y="274" text-anchor="middle" fill="#4aab8a" font-family="Playfair Display" font-size="11" font-weight="600">T3: Structural-</text>
+      <text x="95" y="288" text-anchor="middle" fill="#4aab8a" font-family="Playfair Display" font-size="11" font-weight="600">Ecological Tensions</text>
+      <text x="95" y="302" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Ecological Systems</text>
+      <line x1="176" y1="281" x2="363" y2="281" stroke="#c45b5b" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arr)"/>
+      <text x="267" y="273" text-anchor="middle" fill="#c45b5b" font-family="IBM Plex Sans" font-size="9">constrains</text>
+      <!-- T4 -->
+      <rect x="724" y="252" width="162" height="58" rx="8" fill="rgba(107,91,171,.08)" stroke="rgba(107,91,171,.4)" stroke-width="1.5"/>
+      <text x="805" y="274" text-anchor="middle" fill="#6b5bab" font-family="Playfair Display" font-size="11" font-weight="600">T4: Lateral</text>
+      <text x="805" y="288" text-anchor="middle" fill="#6b5bab" font-family="Playfair Display" font-size="11" font-weight="600">Collaboration</text>
+      <text x="805" y="302" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Mesosystem · Networks</text>
+      <line x1="724" y1="281" x2="537" y2="281" stroke="#6b5bab" stroke-width="1.5" marker-end="url(#ar)"/>
+      <text x="633" y="273" text-anchor="middle" fill="#6b5bab" font-family="IBM Plex Sans" font-size="9">enables</text>
+      <!-- T5 -->
+      <rect x="24" y="430" width="168" height="58" rx="8" fill="rgba(196,91,91,.08)" stroke="rgba(196,91,91,.4)" stroke-width="1.5"/>
+      <text x="108" y="452" text-anchor="middle" fill="#c45b5b" font-family="Playfair Display" font-size="11" font-weight="600">T5: Moral</text>
+      <text x="108" y="466" text-anchor="middle" fill="#c45b5b" font-family="Playfair Display" font-size="11" font-weight="600">Vocation</text>
+      <text x="108" y="480" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">VBE · DisCrit · Agency</text>
+      <line x1="192" y1="450" x2="373" y2="318" stroke="#c45b5b" stroke-width="1.5" marker-end="url(#arr)"/>
+      <!-- T6 -->
+      <rect x="326" y="440" width="168" height="58" rx="8" fill="rgba(212,120,67,.08)" stroke="rgba(212,120,67,.4)" stroke-width="1.5"/>
+      <text x="410" y="462" text-anchor="middle" fill="#d47843" font-family="Playfair Display" font-size="11" font-weight="600">T6: Neurodivergence</text>
+      <text x="410" y="476" text-anchor="middle" fill="#d47843" font-family="Playfair Display" font-size="11" font-weight="600">Recognition</text>
+      <text x="410" y="490" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Neurodiversity · DisCrit</text>
+      <line x1="410" y1="440" x2="440" y2="336" stroke="#d47843" stroke-width="1.5" marker-end="url(#ar)"/>
+      <!-- T7 -->
+      <rect x="708" y="430" width="168" height="58" rx="8" fill="rgba(107,171,107,.08)" stroke="rgba(107,171,107,.4)" stroke-width="1.5"/>
+      <text x="792" y="452" text-anchor="middle" fill="#6bab6b" font-family="Playfair Display" font-size="11" font-weight="600">T7: CBE Paradox</text>
+      <text x="792" y="466" text-anchor="middle" fill="#6bab6b" font-family="Playfair Display" font-size="11" font-weight="600">Aspiration vs Enacted</text>
+      <text x="792" y="480" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Policy Borrowing · Macro</text>
+      <line x1="708" y1="450" x2="537" y2="320" stroke="#6bab6b" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#ar)"/>
+      <!-- RQ labels -->
+      <rect x="348" y="10" width="204" height="36" rx="6" fill="rgba(78,143,202,.07)" stroke="rgba(78,143,202,.25)" stroke-width="1"/>
+      <text x="450" y="25" text-anchor="middle" fill="#4e8fca" font-family="IBM Plex Sans" font-size="10" font-weight="600">RQ1: How do teachers enact adaptive agency?</text>
+      <text x="450" y="39" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Themes 1, 2, 5, 6</text>
+      <rect x="600" y="150" width="86" height="48" rx="6" fill="rgba(74,171,138,.07)" stroke="rgba(74,171,138,.25)" stroke-width="1"/>
+      <text x="643" y="167" text-anchor="middle" fill="#4aab8a" font-family="IBM Plex Sans" font-size="9" font-weight="600">RQ2: Enabling</text>
+      <text x="643" y="180" text-anchor="middle" fill="#4aab8a" font-family="IBM Plex Sans" font-size="9">and constraining</text>
+      <text x="643" y="192" text-anchor="middle" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Themes 3, 4, 7</text>
+      <!-- legend -->
+      <rect x="16" y="524" width="868" height="32" rx="5" fill="rgba(255,255,255,.02)"/>
+      <line x1="34" y1="540" x2="62" y2="540" stroke="#d4a843" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="70" y="544" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Contributes to</text>
+      <line x1="192" y1="540" x2="220" y2="540" stroke="#c45b5b" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="228" y="544" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Constrains</text>
+      <line x1="320" y1="540" x2="348" y2="540" stroke="#6b5bab" stroke-width="1.5"/>
+      <text x="356" y="544" fill="#5a6a82" font-family="IBM Plex Sans" font-size="9">Enables</text>
+      <text x="520" y="544" fill="#4e5e78" font-family="IBM Plex Sans" font-size="8" font-style="italic">Themes iteratively co-constructed; abductive orientation throughout</text>
+    </svg>
+  </div>
+  <div class="card">
+    <div class="ph4">Theoretical Integration Note</div>
+    <div class="am" style="margin-top:0"><strong>Inclusive Utility (3P)</strong> is the central analytical construct receiving inputs from all seven themes. <strong>Themes 1 and 5</strong> are the primary positive drivers at the classroom level (microsystem). <strong>Theme 3</strong> constrains the feasibility frontier from exo- and macrosystem levels. <strong>Theme 4</strong> is a partial compensatory mechanism that shifts the frontier within constraints. <strong>Themes 6 and 7</strong> are cross-cutting lenses revealing the normative and political dimensions of what might otherwise appear as purely pedagogical decisions. The IU construct draws on expected utility theory from financial economics: teachers act as agents maximising educational utility U = f(P1,P2,P3) subject to a feasibility frontier defined by structural conditions.</div>
+  </div>
+</div>
+
+<!-- =========== CODEBOOK V1 =========== -->
+<div id="p-v1" class="panel">
+  <div class="pt">Codebook Version 1 — Initial Open Codes</div>
+  <div class="ps">47 initial codes generated from first complete read-through of all nine transcripts. Raw, numerous, and overlapping — as expected at this stage. Nothing excluded; all data treated as equally significant.</div>
+  <div class="vc">
+    <div class="vc-h"><span class="vb v1">v1.0 · Initial Open Codes</span><span style="font-size:var(--fxs);color:var(--tdim)">Session 1 · 47 codes · 7 groups</span></div>
+    <div class="vd">Groups A through G represent inductive categories arising from first-pass familiarisation. No merging or pruning has occurred. Many codes will be consolidated in v2.</div>
+    <div style="margin-bottom:7px;font-size:var(--fxs);color:var(--tmut);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Group A — What teachers do in classrooms (18 codes)</div>
+    <div class="cchips mb12" id="v1ga"></div>
+    <div style="margin-bottom:7px;font-size:var(--fxs);color:var(--tmut);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Group B — How teachers judge it working (8 codes)</div>
+    <div class="cchips mb12" id="v1gb"></div>
+    <div style="margin-bottom:7px;font-size:var(--fxs);color:var(--tmut);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Group C — Structural constraints (10 codes)</div>
+    <div class="cchips mb12" id="v1gc"></div>
+    <div style="margin-bottom:7px;font-size:var(--fxs);color:var(--tmut);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Group D — Collaboration (7 codes)</div>
+    <div class="cchips mb12" id="v1gd"></div>
+    <div style="margin-bottom:7px;font-size:var(--fxs);color:var(--tmut);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Group E — Teacher motivation (5 codes)</div>
+    <div class="cchips mb12" id="v1ge"></div>
+    <div style="margin-bottom:7px;font-size:var(--fxs);color:var(--tmut);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Group F — Neurodivergence recognition (6 codes)</div>
+    <div class="cchips mb12" id="v1gf"></div>
+    <div style="margin-bottom:7px;font-size:var(--fxs);color:var(--tmut);font-weight:600;text-transform:uppercase;letter-spacing:.5px">Group G — CBE system tensions (6 codes)</div>
+    <div class="cchips" id="v1gg"></div>
+  </div>
+</div>
+
+<!-- =========== CODEBOOK V2 =========== -->
+<div id="p-v2" class="panel">
+  <div class="pt">Codebook Version 2 — Focused Codes and Candidate Themes</div>
+  <div class="ps">After first consolidation pass. 47 initial codes reduced to 22 focused codes grouped into 7 candidate themes. Key interpretive decisions documented below.</div>
+  <div class="vc">
+    <div class="vc-h"><span class="vb v2">v2.0 · Consolidated</span><span style="font-size:var(--fxs);color:var(--tdim)">Session 2 · 22 codes · 7 candidate themes</span></div>
+    <div class="vd">Key consolidation decisions: (1) 18 adaptation-specific codes merged into adaptation ensembles cluster; (2) "language switching" retained as standalone code with its own equity dimension; (3) latent codes introduced for vocation and moral cost not explicit in v1; (4) "pathway promise vs reality" split from general CBE tension to capture T08's account.</div>
+  </div>
+  <div class="tw">
+    <table class="ct">
+      <thead><tr><th>Candidate Theme</th><th>V2 Codes</th><th>Merged from v1</th><th>Dropped</th><th>Note</th></tr></thead>
+      <tbody id="v2-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- =========== MEMOS =========== -->
+<div id="p-memos" class="panel">
+  <div class="pt">Analytic Memos</div>
+  <div class="ps">Five session memos documenting key interpretive decisions, analytic surprises, and coding rationale. These constitute the reflexive journalling component of the audit trail (Nowell et al., 2017).</div>
+  <div id="memos-container"></div>
+</div>
+
+<!-- =========== CODING SPREADSHEET =========== -->
+<div id="p-coding" class="panel">
+  <div class="pt">Coding Spreadsheet</div>
+  <div class="ps">Curated key extracts from all nine interviews. 2-3 extracts per significant code. Filter by participant, theme, or level.</div>
+  <div class="sfb">
+    <select class="ss" id="fp" onchange="filterCS()"><option value="">All Participants</option><option>T01</option><option>T02</option><option>T03</option><option>T04</option><option>T05</option><option>T06</option><option>T07</option><option>T08</option><option>T09</option></select>
+    <select class="ss" id="fth" onchange="filterCS()"><option value="">All Themes</option><option value="T1">T1 Adaptation</option><option value="T2">T2 Inclusive Utility</option><option value="T3">T3 Structural</option><option value="T4">T4 Collaboration</option><option value="T5">T5 Moral Vocation</option><option value="T6">T6 Neurodivergence</option><option value="T7">T7 CBE Paradox</option></select>
+    <select class="ss" id="flv" onchange="filterCS()"><option value="">All Levels</option><option value="Semantic">Semantic</option><option value="Latent">Latent</option></select>
+  </div>
+  <div id="cs-count" class="src"></div>
+  <div class="tw"><table class="ct"><thead><tr><th>PID</th><th style="min-width:220px">Extract</th><th>Code</th><th>Theme</th><th>Level</th><th style="min-width:160px">Memo Note</th></tr></thead><tbody id="cs-body"></tbody></table></div>
+</div>
+
+<!-- =========== SEARCH =========== -->
+<div id="p-search" class="panel">
+  <div class="pt">Search and Filter</div>
+  <div class="ps">Search across all representative quotes by keyword, participant, or theme.</div>
+  <div class="sfb">
+    <input class="si" id="sq" placeholder="Search by keyword..." oninput="doSearch()">
+    <select class="ss" id="sp" onchange="doSearch()"><option value="">All Participants</option><option value="T01">T01 Urban Gr9</option><option value="T02">T02 Rural Jr</option><option value="T03">T03 Rural Gr6</option><option value="T04">T04 SNE School</option><option value="T05">T05 Rural Gr9-10</option><option value="T06">T06 Urban Gr4-6</option><option value="T07">T07 Semi-Urban Gr2</option><option value="T08">T08 Rural Gr5</option><option value="T09">T09 Urban Gr1</option></select>
+    <select class="ss" id="sth" onchange="doSearch()"><option value="">All Themes</option><option value="T1">T1 Adaptation Ensembles</option><option value="T2">T2 Inclusive Utility</option><option value="T3">T3 Structural Tensions</option><option value="T4">T4 Collaboration</option><option value="T5">T5 Teacher Agency</option><option value="T6">T6 Neurodivergence</option><option value="T7">T7 CBE Paradox</option></select>
+  </div>
+  <div id="src-c" class="src"></div>
+  <div id="src-r"></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const TC={T1:'#d4a843',T2:'#4e8fca',T3:'#4aab8a',T4:'#6b5bab',T5:'#c45b5b',T6:'#d47843',T7:'#6bab6b'};
+const TN={T1:'Adaptation Ensembles',T2:'Inclusive Utility (3P)',T3:'Structural Tensions',T4:'Lateral Collaboration',T5:'Moral Vocation',T6:'Neurodivergence',T7:'CBE Paradox'};
+
+const participants=[
+  {id:'T01',ctx:'Urban',ctag:'u',grade:'Grade 9 (Junior)',exp:'22yr',cls:'40-90',sen:'Mild/undiagnosed'},
+  {id:'T02',ctx:'Rural',ctag:'r',grade:'Grade 7-9 (Junior)',exp:'4yr CBC',cls:'54',sen:'Dyslexia, dysgraphia, micro-autism'},
+  {id:'T03',ctx:'Rural',ctag:'r',grade:'Grade 6 (Lower)',exp:'10+yr',cls:'55-59',sen:'Eye-hand coord.; prior autism'},
+  {id:'T04',ctx:'Urban SNE',ctag:'sne',grade:'Foundational-Pre-Voc',exp:'10+yr',cls:'31',sen:'Autism, intellectual disabilities'},
+  {id:'T05',ctx:'Rural',ctag:'r',grade:'Grade 9-10',exp:'12yr',cls:'42-66',sen:'Undiagnosed; slow learners'},
+  {id:'T06',ctx:'Urban',ctag:'u',grade:'Grade 4-6 (Lower)',exp:'15yr',cls:'40-60',sen:'Autism; SNE pull-out unit'},
+  {id:'T07',ctx:'Semi-Urban',ctag:'su',grade:'Grade 2 (Lower)',exp:'17yr',cls:'60-70',sen:'Partial autism; co-teacher'},
+  {id:'T08',ctx:'Rural',ctag:'r',grade:'Grade 5 (Lower)',exp:'3yr pub.',cls:'46',sen:'Generational illiteracy; undiagnosed SEN'},
+  {id:'T09',ctx:'Urban',ctag:'u',grade:'Grade 1 (Lower)',exp:'15yr',cls:'47',sen:'Reading/writing difficulties; SNE co-teacher'}
+];
+
+const ctxMap={u:'tag-u',r:'tag-r',su:'tag-su',sne:'tag-sne'};
+const ctxLabel={u:'Urban',r:'Rural',su:'Semi-Urban',sne:'SNE'};
+
+const themes=[
+  {id:'T1',name:'Adaptation Ensembles: Assembling the Feasible Frontier',lens:'UDL · Social Constructivism · Inclusive Utility',
+   desc:'Teachers assemble context-specific bundles of low-cost adjustments adapted to what is feasible within their constraints. These adaptation ensembles include heterogeneous grouping, translanguaging, visual mediation, task chunking, peer scaffolding, and flexible pacing. They emerge from teachers\' situated pedagogical judgement, not curriculum mandate.',
+   codes:['Heterogeneous grouping','Translanguaging','Visual/multimodal','Task chunking','Peer pairing','Seating proximity','Scaffolding (I/We/You do)','Flexible time','Oral alternatives','Hands-on activities','Music/songs','Clay modelling','ICT (personal phone)'],
+   quotes:[
+     {pid:'T01',text:'There are those who learn from discussions. There are those who learn when you write and they perceive what is written. There are those who learn from story, songs, games. We try to vary the pedagogies.',codes:['Multimodal variation']},
+     {pid:'T03',text:'Like let\'s say I put a question in English, and then I explain the same question in Kiswahili, you will see his hand up, and he answers correctly. So the barrier seems to be broken when you use a different language.',codes:['Translanguaging'],ctx:'On learner with eye-hand coordination difficulties'},
+     {pid:'T02',text:'I carry projectors almost as many times as I can to tap into those learners who are visual. Our learner is very visual, likes seeing a lot, or touching a lot, so that lesson becomes more interesting to them.',codes:['Visual aids','ICT']},
+     {pid:'T03',text:'There is another principle that we use here in school: I do, we do, then you do. Yeah, it works.',codes:['Scaffolding (I/We/You do)']},
+     {pid:'T09',text:'Instead of him writing because he might take the whole day, he can answer orally. If it\'s something to do with drawing, writing, we can do drawing and reading. I can also make some matching.',codes:['Oral alternatives','Task modification']},
+     {pid:'T04',text:'One time last year, we made a chicken coop with the learner. I bought a hammer, a saw, we got materials from broken desks. We also have another one who wants to be a chef, when we are cooking, the learner is there learning.',codes:['Hands-on','Strength-based'],ctx:'Pre-vocational learner'},
+   ]},
+  {id:'T2',name:'Inclusive Utility in Practice: Reading the 3Ps',lens:'Inclusive Utility (3P) · IPAA (Florian, 2014)',
+   desc:'Teachers demonstrate a working awareness of Presence, Participation, and Progression even without the terminology. Presence is near-universal in urban schools but fragile in rural contexts. Progression is most often read through small wins and observable behavioural change, a tentative alignment with CBE\'s competency logic over examination metrics.',
+   codes:['Presence (attendance)','Participation (engagement)','Progression (milestones)','Celebrating small wins','Belonging','Dropout/disengagement'],
+   quotes:[
+     {pid:'T06',text:'This learner is always in school. In fact, the parents do tell me, Anakataa nikimwambia leo hakuna shule, anakataa. I think it is because of the teacher.',codes:['Presence','Belonging'],ctx:'Autistic learner; parent testimony'},
+     {pid:'T04',text:'aki-count afike three, that\'s a step. Then from there, you just continue polepole tu. It is encouraged because there are other parameters that we check on.',codes:['Celebrating small wins','Progression']},
+     {pid:'T07',text:'When she was in Grade 1, she could not communicate right, but right now you can hear her calling teacher. She can come tell you in Kiswahili, Huyu anapiga. She is actually telling herself to wipe her nose.',codes:['Progression','Communication development']},
+     {pid:'T05',text:'Some of the curriculum was so heavy for them to comprehend. There is quite a number, around 2%, who dropped. They felt like they couldn\'t manage, so they said no, they are not going to do it.',codes:['Dropout','Curriculum weight']},
+     {pid:'T09',text:'When they are accepted by others, they try. But if they feel that they are neglected, they withdraw. So even if they know the answer, they\'ll not answer because they feel as if whatever I\'m going to say is not correct.',codes:['Belonging','Participation (emotional safety)']},
+   ]},
+  {id:'T3',name:'Structural-Ecological Tensions: The Borrowed Architecture Problem',lens:'Ecological Systems Theory · Policy Borrowing (Phillips and Ochs, 2003)',
+   desc:'Kenya\'s CBE was structured after Nordic models assuming a tripartite support system, small classes, and universal assistive technology. None are present. Class sizes reach 90, assistive tech is almost entirely absent, and teachers use personal smartphones at personal cost. The clustering system continues to reproduce merit-based stratification while CBE publicly disavows it.',
+   codes:['Class size constraints','Resource scarcity','Technology gap','Retooling inadequacy','Assessment pressure','Clustering contradiction','Social worker absence','Teacher wellbeing','Leadership variability'],
+   quotes:[
+     {pid:'T01',text:'It\'s a hybrid. It\'s a hybrid of what is the intended and what is actual. Once you now have Grade 9 as the candidate class, KJSEA preparation will require a lot of time to review what was covered in Grades 7, 8, and 9.',codes:['CBE hybrid','Assessment pressure']},
+     {pid:'T05',text:'We are almost 10 years in. And we are still retooling. We have teachers who have not attended the training. So what does that tell you? It tells me that the teacher is still teaching 8-4-4 in CBE.',codes:['Retooling inadequacy']},
+     {pid:'T08',text:'These pathways, it is not working because most of the schools do not have facilities. Monanda had taken the sports pathway; it does not have a field, no teachers. The school has 13 learners.',codes:['Clustering contradiction','Pathway rhetoric vs reality']},
+     {pid:'T04',text:'The biggest problem comes from the head of institutions who are not ready to assist with these learners. But now I have a new head of institution who is very cooperative.',codes:['Leadership variability']},
+     {pid:'T03',text:'We don\'t have Wi-Fi in our school. So if we need something to do with technology, I have to use my phone. We only have one classroom which is connected to electricity.',codes:['Technology gap'],ctx:'Rural school'},
+   ]},
+  {id:'T4',name:'Lateral Collaboration as Lifeline',lens:'Ecological Systems (mesosystem) · Harris (2013)',
+   desc:'In the absence of vertical Nordic-style support, teachers default to lateral peer-to-peer collaboration. WhatsApp groups serve as de facto professional infrastructure. Subject panels, co-teaching found in two schools, and cross-school networks supplement this. However what is described is largely cooperation rather than true collaboration: it lacks joint problem-solving, role clarity, and reciprocal accountability.',
+   codes:['WhatsApp (lateral)','Subject panels','Co-teaching model','Parental engagement','SNE as resource','Cooperation vs collaboration (latent)'],
+   quotes:[
+     {pid:'T07',text:'We always have another teacher in the room. The co-teacher will make sure that the learner who is differently abled will get into the group, maybe by guiding him or her how to participate.',codes:['Co-teaching model']},
+     {pid:'T02',text:'In our sub-county, we have a junior school WhatsApp group where we undertake joint examinations and joint collaborative activities. We share the resources across those groups.',codes:['Cross-school collaboration','WhatsApp']},
+     {pid:'T05',text:'Schemes of work are just done because we are being followed. If nobody\'s coming to check them, we don\'t do that. But the WhatsApp groups, when teachers share materials, you look at what they have done.',codes:['Compliance vs genuine collaboration']},
+     {pid:'T09',text:'My co-teacher is an SNE teacher. It was just a coincidence that she\'s an SNE. The support of the administration is 100% good.',codes:['Co-teaching (SNE)','Admin support']},
+   ]},
+  {id:'T5',name:'Teacher Adaptive Agency as Moral Vocation',lens:'VBE (Ngwacho, 2024) · DisCrit · Teacher Agency',
+   desc:'Across all nine participants, adaptation for inclusion is framed not as professional obligation but as moral calling, "ni moyo" (it is the heart). Teachers invest personal time, finances, data bundles, and emotional labour beyond any institutional expectation. This is simultaneously a strength and a systemic risk: it masks structural deficits and is not scalable.',
+   codes:['Child-first philosophy','Personal financial investment','Vocation/heart (latent)','Unpaid extra time','Resilience under constraint'],
+   quotes:[
+     {pid:'T01',text:'I will still use it. My learners always come first. You\'ll find me in the class at 6:30 in the morning. I\'ll come to school every Saturday at 7:00 without anyone paying me anything.',codes:['Child-first','Unpaid extra time']},
+     {pid:'T04',text:'When teaching learners with special needs, it comes from your heart. Kama huna roho ya utu, ata kama ume-train on special needs, you cannot teach.',codes:['Teaching as vocation','Moral commitment']},
+     {pid:'T08',text:'It is costly, but now you have to do it. You just do it. You just close your eyes and do it. Because it\'s enhancing your work.',codes:['Resilience','Personal cost'],ctx:'On downloading videos at own expense'},
+     {pid:'T09',text:'It is a commitment. So during that lunch time where you\'re supposed to be taking your lunch and resting, you create time, you adjust. So it\'s a sacrifice for the teacher.',codes:['Unpaid extra time','Sacrifice']},
+   ]},
+  {id:'T6',name:'Neurodivergence: Between Recognition, Resourcelessness, and the Strength-Turn',lens:'Neurodiversity paradigm (Armstrong, 2012) · Social constructivism · DisCrit',
+   desc:'All participants describe learners with features of autism, ADHD, dyslexia, dysgraphia, or sensorimotor difficulties, yet almost none have formal diagnostic support. A key emergent finding is a spontaneous strength-based turn: teachers consistently leverage learner strengths as adaptive strategy, prefiguring the neurodiversity paradigm\'s core claim without any training in it.',
+   codes:['Identification without diagnosis','Strength-based framing (latent)','Parent denial','Medical model referral','Labelling effects (latent)'],
+   quotes:[
+     {pid:'T03',text:'This boy cannot be able to pick something from the board, transferring whatever you\'ve written to his book is a challenge. I\'ve been with him for three years now. I\'ve tried my best, but I don\'t know what to do.',codes:['Identification without resources','Teacher isolation'],ctx:'Eye-hand coordination difficulties'},
+     {pid:'T03',text:'Even shaping letters, he used to shape them very well. He also liked drawing and colouring. He could memorise some words and name the pictures. He can make copies of a whole chart, well drawn and coloured.',codes:['Strength-based framing'],ctx:'On a non-verbal autistic learner'},
+     {pid:'T04',text:'Some parents, they don\'t accept that my child has special needs. When I tried to talk with the headteacher, he said, Wewe wachana na hawa watoto, wakae. Most of the headteachers ni wale wa kitambo.',codes:['Parent denial','Leadership barrier']},
+     {pid:'T02',text:'We have very severe cases of dyslexia and dysgraphia, any situation where learners cannot construct language sentences. On the dyscalculia, confusing multiplication and addition. It\'s very common and very severe.',codes:['Neurodivergence recognition']},
+   ]},
+  {id:'T7',name:'The CBE Paradox: Aspirational Design, Enacted Contradiction',lens:'Policy Borrowing · Ecological Systems (macro) · VBE',
+   desc:'Teachers endorse CBE\'s inclusive aspirations broadly while documenting a persistent implementation gap. The curriculum remains entangled with 8-4-4 logic, examination pressure, merit-based stratification, and content overload persist. The pathway system is good policy encountered as non-functioning in practice, particularly in rural Cluster 4 contexts.',
+   codes:['Aspirational vs enacted (latent)','Hybrid system','Pathway promise vs reality (latent)','Parental 8-4-4 mindset','CBE goodwill despite constraints (latent)'],
+   quotes:[
+     {pid:'T02',text:'This is a very good curriculum. I support it 100%. When you find the learners getting imparted with hands-on knowledge such that they can grow diversely, this learner comes out very empowered and engaged.',codes:['CBE goodwill','Competency vision']},
+     {pid:'T05',text:'To be honest, we were teaching the learners to pass the exam. And since we have been doing it for a while, we are still doing it. And that\'s why it\'s going to affect us with the new curriculum.',codes:['8-4-4 persistence','Exam teaching']},
+     {pid:'T08',text:'I feel the government is not ready with the CBC system. We are ten years in and we are still retooling. The resources, that one is zero.',codes:['System unreadiness','Resource gap']},
+     {pid:'T09',text:'CBC has incorporated all of them. If you\'re not good in this, you are good in the other. The project one is quite high, he is exceeding. It\'s incorporating all types of learners.',codes:['CBE inclusivity','Multi-modal assessment']},
+   ]}
+];
+
+const codebook=[
+  {theme:'T1',codes:[
+    {n:'heterogeneous_grouping',lv:'Semantic',def:'Deliberate mixing of ability levels within groups; rejecting streaming in favour of peer-assisted collaboration.',f:9},
+    {n:'translanguaging',lv:'Semantic',def:'Code-switching into Kiswahili or Kikuyu to scaffold concepts taught in English. Individual initiative, not policy; sometimes covert.',f:5},
+    {n:'visual_multimodal',lv:'Semantic',def:'Projectors, pictorials, wall charts, videos downloaded at own expense to supplement verbal instruction.',f:7},
+    {n:'task_chunking',lv:'Semantic',def:'Breaking tasks into sequential smaller units; simplified instructions; step-by-step delivery.',f:8},
+    {n:'peer_pairing',lv:'Semantic',def:'Deliberate pairing of struggling learner with understanding peer; social scaffolding without classroom extraction.',f:7},
+    {n:'seating_proximity',lv:'Semantic',def:'Positioning neurodivergent learners near teacher\'s desk, away from windows/doors. Primary low-cost spatial accommodation.',f:6},
+    {n:'scaffolding_ido_wedo_youdo',lv:'Semantic',def:'Gradual release of responsibility: teacher models then co-constructs then releases. Named explicitly by T03.',f:6},
+    {n:'flexible_extra_time',lv:'Semantic',def:'Allowing task completion beyond lesson; oral alternatives; doubling reading test time.',f:7},
+    {n:'oral_alternatives',lv:'Semantic',def:'Verbal response, dictation, or drawing as accommodation for learners with writing/motor difficulties.',f:4},
+    {n:'practical_handson',lv:'Semantic',def:'Real-world activities making abstract concepts concrete. Chicken coops, cooking, field trips, everyday objects.',f:8},
+    {n:'music_songs',lv:'Semantic',def:'Songs, rhymes, musical patterns as mnemonic and engagement tools for reluctant learners.',f:4},
+    {n:'modelling_clay_objects',lv:'Semantic',def:'Physical manipulation of clay, letter shapes, number forms; fine motor development; abstract to tangible.',f:3},
+    {n:'ICT_personal_phone',lv:'Semantic',def:'Teacher\'s personal smartphone used to search, download, or display digital content. A hidden personal cost.',f:7},
+  ]},
+  {theme:'T2',codes:[
+    {n:'3P_presence',lv:'Semantic',def:'Physical attendance and affective sense of belonging. Urban: near-100%. Rural: seasonal variability driven by farm labour and poverty.',f:9},
+    {n:'3P_participation',lv:'Semantic',def:'Active engagement with content, materials, or peers. Presence does not equal participation; several teachers note learners physically present but disengaged.',f:9},
+    {n:'3P_progression',lv:'Semantic',def:'Forward movement, however small. Measured through small observable wins more than test scores. De facto competency alignment.',f:9},
+    {n:'celebrating_small_wins',lv:'Latent',def:'Explicit affirmation of micro-milestones as motivational and relational tools. Strongest in T04 (SNE) and T09 (Grade 1).',f:6},
+    {n:'belonging',lv:'Latent',def:'Emotional safety and peer acceptance as preconditions for participation. Teachers actively construct this before expecting engagement.',f:7},
+    {n:'dropout_disengagement',lv:'Semantic',def:'Withdrawal from schooling. T05: ~2% dropout; T08: seasonal attendance; silent Grade 9 withdrawal.',f:3},
+  ]},
+  {theme:'T3',codes:[
+    {n:'class_size_constraints',lv:'Semantic',def:'Range: 31 (SNE) to 90 (T01 lower primary). All mainstream participants report overcrowding as primary constraint. Nordic baseline of 18-21 never approached.',f:9},
+    {n:'resource_scarcity',lv:'Semantic',def:'Absence of basic materials: lab equipment, assistive devices, printing. Teachers routinely improvise or self-fund.',f:9},
+    {n:'technology_gap',lv:'Semantic',def:'Non-functional government tablets; absent Wi-Fi in rural schools; teachers use personal phones and data bundles.',f:8},
+    {n:'retooling_inadequacy',lv:'Semantic',def:'T05 estimates approximately 20% effective retooling after nearly 10 years. Some senior school teachers have received no CBE training.',f:6},
+    {n:'assessment_pressure',lv:'Latent',def:'Persistence of KJSEA high-stakes logic alongside CBE\'s formative rhetoric; pushes teachers back toward exam drilling.',f:8},
+    {n:'clustering_contradiction',lv:'Latent',def:'Cluster system reproduces merit-based stratification under new labels, contradicting CBE\'s anti-ranking stance.',f:5},
+    {n:'social_worker_absence',lv:'Latent',def:'No professional social work function in Kenyan public schools. Administration absorbs this role informally.',f:2},
+    {n:'teacher_wellbeing',lv:'Latent',def:'Mental health impacts of workload, paperwork, and emotional labour. T01 describes dedicated TPD stress management session.',f:3},
+    {n:'leadership_variability',lv:'Semantic',def:'Head teacher stance as primary enabler or barrier. T04 contrasts obstructive vs supportive heads; T08 identifies leadership renewal as most needed change.',f:6},
+  ]},
+  {theme:'T4',codes:[
+    {n:'whatsapp_lateral',lv:'Semantic',def:'Informal teacher-initiated WhatsApp groups for resource sharing and problem-solving; unstructured, limited feedback mechanisms.',f:7},
+    {n:'subject_panels',lv:'Semantic',def:'Formal departmental meetings, typically once per term; attendance and follow-through variable.',f:7},
+    {n:'co_teaching',lv:'Semantic',def:'Two teachers simultaneously in classroom; found only in T07 and T09\'s schools; substantially enables differentiated support.',f:3},
+    {n:'parental_engagement',lv:'Semantic',def:'School-family interaction for learner support; highly variable: supportive in urban, resistant or absent in rural/low-income contexts.',f:8},
+    {n:'sne_as_resource',lv:'Semantic',def:'General education teachers consulting SNE specialists for guidance; access highly context-dependent.',f:4},
+    {n:'cooperation_vs_collaboration',lv:'Latent',def:'What teachers describe is largely informal resource sharing (cooperation), not joint problem-solving with role clarity and reciprocal accountability (collaboration proper).',f:9},
+  ]},
+  {theme:'T5',codes:[
+    {n:'child_first_philosophy',lv:'Latent',def:'Learner-centred motivation overriding institutional constraints and exhaustion; core moral driver of adaptive behaviour.',f:9},
+    {n:'personal_financial_investment',lv:'Semantic',def:'Teachers spending personal funds on materials, printing, data bundles, tools. T04 bought hammer and saw for carpentry lesson.',f:8},
+    {n:'vocation_heart',lv:'Latent',def:'"Ni moyo" (it is the heart): teaching as moral or spiritual calling. Strongest in T04 (SNE) but present across all 9.',f:7},
+    {n:'unpaid_extra_time',lv:'Semantic',def:'Arriving early (T01: 6:30am Saturdays), staying late, lunch-time tutorials, all without compensation.',f:8},
+    {n:'resilience_under_constraint',lv:'Latent',def:'Active improvisation in face of structural absence. T08: downloading videos from cyber cafe. T04: building chicken coop from broken desks.',f:9},
+  ]},
+  {theme:'T6',codes:[
+    {n:'identification_no_diagnosis',lv:'Semantic',def:'Teachers recognise and name neurodivergent profiles (autism, dyslexia, dyscalculia) without formal diagnostic support; sustained observation only.',f:7},
+    {n:'strength_based_framing',lv:'Latent',def:'Spontaneous teacher attention to learner strengths (art, music, sport, oral fluency) as adaptive strategy; prefigures neurodiversity paradigm.',f:6},
+    {n:'parent_denial',lv:'Semantic',def:'Parental refusal to accept SEN identification; stigma, misinformation, preference for mainstream placement.',f:5},
+    {n:'medical_model_referral',lv:'Semantic',def:'Formal referral chain: teacher to head to parent to hospital to CSO to placement; slow, bureaucratic, rarely completed.',f:3},
+    {n:'labelling_effects',lv:'Latent',def:'How labels ("noisemaker," "slow") follow learners between classes and schools, shaping teacher expectations and peer relations.',f:4},
+  ]},
+  {theme:'T7',codes:[
+    {n:'aspirational_vs_enacted',lv:'Latent',def:'Gap between CBE\'s published inclusive aspirations and classroom-level reality; present in all 9 interviews.',f:9},
+    {n:'hybrid_system',lv:'Semantic',def:'T01\'s own term: CBE contains substantial 8-4-4 logic inside its learner-centred rhetoric.',f:7},
+    {n:'pathway_promise_vs_reality',lv:'Latent',def:'Talent pathway system endorsed in principle but non-functional in rural contexts; T08: Monanda sports pathway school has no field, 13 learners.',f:4},
+    {n:'parental_8_4_4_mindset',lv:'Semantic',def:'Parents\' residual examination-oriented expectations conflict with CBE\'s project-based demands; friction around grading, school choice, materials.',f:6},
+    {n:'CBE_goodwill_despite_constraints',lv:'Latent',def:'All 9 teachers express genuine belief in CBE\'s potential despite enumerated failures: double-consciousness of critique and commitment.',f:9},
+  ]}
+];
+
+const v1Data={
+  ga:['grouping by mixed ability','language switching (Kiswahili/Kikuyu)','seating near teacher','extra/flexible time','peer pairing/peer help','using phone/projector for visual','clay modelling','songs/rhymes/music','visual aids / wall charts','task chunking','oral alternatives to writing','simplified instructions','hands-on / practical activities','I do / we do / you do scaffolding','repeating lesson / re-teaching','flashcards','drawing / matching tasks','taking learner to external workshop'],
+  gb:['child comes every day / loves school','child participates / hand up','small wins celebrated','vocabulary growth / new words','dropout / seasonal absence','belongs in the room / accepted by peers','counting to 3 is enough progress','watching but not engaging'],
+  gc:['no Wi-Fi / no electricity','broken / outdated tablets','class sizes 60-90','KJSEA exam pressure','no social workers','retooling incomplete / ~20%','head teacher blocking SNE support','clerical/paperwork burden','teacher mental health / stress','no assistive technology'],
+  gd:['WhatsApp staff/parent groups','subject panels (once per term)','co-teaching / two teachers in room','parent resistance / denying SEN','KICD retooling attended/valued','consulting lower primary teacher','Friday TPD sessions'],
+  ge:['coming in at 6:30am / Saturdays','buying materials with own money','"ni moyo" — it is the heart','child first philosophy','closing eyes and just doing it'],
+  gf:['identifying autism without diagnosis','dyslexia / dysgraphia named','eye-hand coordination difficulty','strength-based noticing (art, sport)','parent refusing referral','ADHD-type attention issues'],
+  gg:['CBC is good in principle','clustering still merit-based','still teaching for exam','"hybrid system" (T01 term)','parents still 8-4-4 mindset','pathway schools lack facilities']
+};
+
+const v2Data=[
+  {th:'CT1: Adaptation Ensembles',col:TC.T1,codes:['multimodal_teaching','translanguaging','heterogeneous_grouping','scaffolding','seating_proximity'],merged:'visual aids + wall charts + projector → multimodal; I do/we do/you do + peer pairing → scaffolding',dropped:'flashcards (absorbed into multimodal)',note:'Group of individual adaptations reconceived as bundles per Florian (2014) IPAA logic'},
+  {th:'CT2: Inclusive Utility',col:TC.T2,codes:['presence_indicators','participation_markers','progression_signals','belonging'],merged:'small wins + vocabulary growth → progression signals; loves school + accepted by peers → belonging',dropped:'none',note:'3P framework operationalised here as analytic lens, not just a scaffold'},
+  {th:'CT3: Structural Tensions',col:TC.T3,codes:['resource_scarcity','technology_gap','assessment_pressure','retooling_inadequacy','leadership_variability'],merged:'no Wi-Fi + broken tablets + no AT → technology gap; class 60-90 + no TA → resource scarcity',dropped:'clerical burden (absorbed into assessment pressure)',note:'Bronfenbrenner lens applied: codes labelled by system level they operate at'},
+  {th:'CT4: Lateral Collaboration',col:TC.T4,codes:['whatsapp_networks','subject_panels','co_teaching','parental_engagement'],merged:'Friday TPD + KICD retooling → formal CPD (kept separate)',dropped:'consulting lower primary (absorbed into subject panels)',note:'Distinction between cooperation (sharing) and collaboration (joint problem-solving) introduced at latent level'},
+  {th:'CT5: Moral Vocation',col:TC.T5,codes:['child_first_philosophy','personal_financial_cost','unpaid_extra_time','vocation_heart'],merged:'6:30am + Saturdays → unpaid extra time; buying materials → personal cost; "ni moyo" → vocation (latent)',dropped:'none',note:'Latent code "vocation/heart" not stated explicitly but implied across all 9 participants'},
+  {th:'CT6: Neurodivergence',col:TC.T6,codes:['identification_without_diagnosis','strength_based_observation','parent_denial','labelling_effects'],merged:'autism + dyslexia + eye-hand coordination → ID without diagnosis; art/sport strength → strength-based',dropped:'ADHD-type (absorbed into ID without diagnosis)',note:'Neurodiversity paradigm (Armstrong, 2012) applied as latent frame: difference vs deficit'},
+  {th:'CT7: CBE Paradox',col:TC.T7,codes:['aspirational_vs_enacted','hybrid_system','pathway_rhetoric','parental_8_4_4_mindset','CBE_goodwill'],merged:'clustering + pathway schools no facilities → pathway rhetoric; CBC is good + still exam teaching → aspirational vs enacted',dropped:'none',note:'"Hybrid system" retained as T01\'s own term: insider language with strong analytic purchase'}
+];
+
+const memos=[
+  {date:'Memo 1 — First Read-Through, All 9 transcripts',text:'Initial familiarisation with the full corpus. Struck immediately by the consistency of the <strong>personal cost narrative</strong> across very different teachers. T01 (urban, senior school) and T08 (rural, marginal community) share the same willingness to absorb financial and temporal costs without institutional recognition. This feels latent: not something teachers explicitly flag as remarkable, but something that saturates the data. The 6:30am/Saturday detail from T01 needs a latent code, not just a semantic one. The semantic code would be "unpaid extra time" but the latent dimension is something about moral vocation that precedes and exceeds the specific behaviour. T03\'s account of the boy who cannot copy from the board is analytically rich. Three years of sustained, unresolved effort. The absence of diagnostic support is made visible not through complaint but through the flatness of the description: "I don\'t know what to do." This is a teacher who has reached the edge of their adaptive capacity without any institutional response.'},
+  {date:'Memo 2 — First Coding Pass, Semantic Level',text:'Semantic coding generated 47 initial codes (Codebook v1). The challenge at this stage is the adaptation codes: there are too many that are conceptually close but practically distinct. "Flashcards," "wall charts," "projector," and "pictures from internet" are all doing similar analytic work (making content visible) but arise from very different resourcing contexts. Decided to group these as <strong>visual_multimodal</strong> in v2, while retaining the distinction in the coding spreadsheet notes because the resourcing dimension is analytically important for Theme 3. T04\'s data stands apart: the IEP, the modelling clay, the gadgets from KISE, the chicken coop. The SNE context produces a qualitatively different kind of adaptation. Need to be careful not to let T04 pull Theme 1 too far toward specialist practice.'},
+  {date:'Memo 3 — Latent Coding, Values Dimension',text:'Moved to latent coding pass after semantic coding was complete. Three latent codes emerged that were not visible at the semantic level: <strong>cooperation_vs_collaboration</strong> (Theme 4), <strong>CBE_goodwill_despite_constraints</strong> (Theme 7), and <strong>vocation_heart</strong> (Theme 5). The "goodwill despite critique" code captures something T02 says directly ("I support it 100%") and T05 implies ("the government is not ready but the curriculum itself is good"). This double-consciousness of systemic critique and personal commitment is a latent pattern that no individual participant articulates but that emerges structurally across accounts. Concern: am I importing too much from Harris (2013) at the expense of participants\' own categories? Counter-check: ran back through T04, T07, T08 data: none describe what they do as "collaboration" in the proper sense. T07 is closest (co-teacher model) but explicitly notes role ambiguity. The latent code holds.'},
+  {date:'Memo 4 — Theme Construction, Consolidation',text:'Theme construction from 22 focused codes (v2) to 7 themes. The most difficult decision was whether Theme 5 (Moral Vocation) should be standalone or absorbed into Theme 1 as its motivational substrate. Argument for absorption: moral vocation is what produces adaptation ensembles. Argument against: it is analytically distinct. It explains the <strong>sustainability</strong> of adaptive behaviour, not the form it takes, and it speaks directly to RQ1\'s "pedagogical reasoning" component. Decision: keep separate. Theme 6 (Neurodivergence Recognition) was at risk of being a thin theme, only 5 codes. But the strength-based framing code is carrying heavy latent-level analytical work (the spontaneous turn toward neurodiversity paradigm without any training in it) and the parent denial code is essential for understanding why formal support pathways break down.'},
+  {date:'Memo 5 — Counter-Example Check, Disconfirming Cases',text:'Systematic check for counter-examples and disconfirming cases before finalising themes. Against <strong>Theme 4 (Collaboration)</strong>: T05 explicitly states that schemes of work are done for inspection compliance, not genuine planning. This directly disconfirms any claim that formal collaboration structures are functioning as intended. Incorporated into the cooperation/collaboration latent code as the sharpest available counter-evidence. Against <strong>Theme 2 (Presence)</strong>: T05 is the only participant to report actual dropout (~2%). This makes T05 a crucial analytic outlier: not evidence against Theme 2 but evidence that the presence P is contextually variable in ways urban school data alone would obscure. Against <strong>Theme 7 (CBE goodwill)</strong>: T08 is the most sceptical of CBE rhetoric: "serious disconnect is there." But even T08 does not reject the principle; he rejects the implementation. The double-consciousness pattern holds. No genuine counter-evidence to Theme 7 found.'}
+];
+
+const csData=[
+  {pid:'T01',theme:'T1',code:'heterogeneous_grouping',level:'Semantic',extract:'The grouping is heterogeneous. They sit in mixed ability. Actually, we vary the seating according to the results. Competition is really discouraged in the system; it\'s more of collaboration.',memo:'Key instance of deliberate design against streaming; connects to CBE collaboration competency'},
+  {pid:'T03',theme:'T1',code:'translanguaging',level:'Semantic',extract:'Like let\'s say I put a question in English, and then I explain the same question in Kiswahili, you will see his hand up, and he answers correctly. So the barrier seems to be broken when you use a different language.',memo:'Translanguaging as both pedagogical bridge and assessment insight: reveals cognition hidden by language barrier'},
+  {pid:'T02',theme:'T1',code:'translanguaging',level:'Semantic',extract:'You are forced to teach a mathematics lesson in Kiswahili at times, an English lesson in Kiswahili at times. That\'s the first greatest barrier, so you have to reduce your content to a learner to a micro level.',memo:'Language as structural barrier surfaced; translanguaging framed as necessity not choice'},
+  {pid:'T09',theme:'T1',code:'seating_proximity',level:'Semantic',extract:'You make sure that learner is sitting next to you or near you so that you can monitor. You can also even have a learner who is much supportive, you partner him with a learner.',memo:'Proximity bundled immediately with peer pairing: adaptation ensemble logic visible in single sentence'},
+  {pid:'T03',theme:'T1',code:'scaffolding_ido_wedo_youdo',level:'Semantic',extract:'There is another principle that we use here in school: I do, we do, then you do. Yeah, it works.',memo:'Spontaneous naming of established pedagogical framework; not from training but from practice'},
+  {pid:'T04',theme:'T1',code:'practical_handson',level:'Semantic',extract:'One time last year, we made a chicken coop with the learner. I bought a hammer, a saw, msumeno, tukatafuta misumari, mbao from broken desks. And we also have another one who wants to be a chef, when we are cooking, the learner is there learning.',memo:'Most vivid instance of practical adaptation; personal financial investment + strength-based design + vocational CBE alignment combined'},
+  {pid:'T06',theme:'T2',code:'3P_presence',level:'Semantic',extract:'This learner is always in school. In fact, the parents do tell me, Anakataa nikimwambia leo hakuna shule, anakataa. I think it is because of the teacher.',memo:'Presence driven by relational belonging to teacher: strongest available evidence of affective dimension of presence P'},
+  {pid:'T08',theme:'T2',code:'3P_presence',level:'Semantic',extract:'Attendance changes. In January we have very few pupils. When we approach the planting season, they often come back to school to escape the farm labour.',memo:'Seasonal presence driven by economic logic not learning motivation; systemic rural poverty underlying the first P'},
+  {pid:'T05',theme:'T2',code:'dropout_disengagement',level:'Semantic',extract:'Some of the curriculum was so heavy for them to comprehend. There is quite a number, around 2%, who dropped. They felt like they couldn\'t manage, so they said no, they are not going to do it.',memo:'Only participant to quantify dropout; curriculum content weight as direct cause'},
+  {pid:'T04',theme:'T2',code:'celebrating_small_wins',level:'Latent',extract:'aki-count afike three, that\'s a step. Then from there, you just continue polepole tu. It is encouraged because there are other parameters that we check on.',memo:'SNE context produces most explicit redefinition of progression; counting to 3 as achievement reframes normative curriculum benchmark'},
+  {pid:'T09',theme:'T2',code:'belonging',level:'Latent',extract:'When they are accepted by others, they try. But if they feel that they are neglected, they withdraw. So even if they know the answer, they\'ll not answer because they feel as if whatever I\'m going to say is not correct.',memo:'Belonging explicitly theorised by T09 as precondition for participation; latent logic matches Florian (2014) without naming it'},
+  {pid:'T01',theme:'T3',code:'assessment_pressure',level:'Latent',extract:'It\'s a hybrid. It\'s a hybrid of what is the intended and what is actual. KJSEA preparation will require a lot of time to review what was covered in Grade 7, 8, and 9. You will feel that the problem is not more from the learners but the workload to be covered.',memo:'T01 coins "hybrid": insider conceptual language with strong analytic purchase'},
+  {pid:'T05',theme:'T3',code:'retooling_inadequacy',level:'Semantic',extract:'A student who reported in Grade 1 is now Grade 10. That tells you we are almost 10 years. And we are still retooling. We have got some teachers who have not attended the training. So what does that tell you? It tells me that the teacher is still teaching 8-4-4 in CBE.',memo:'Sharpest articulation of retooling failure; ten-year timeline makes the inadequacy undeniable'},
+  {pid:'T04',theme:'T3',code:'leadership_variability',level:'Semantic',extract:'The biggest problem comes from the head of institutions who are not ready to assist with these learners. But now I have a new head of institution who is very cooperative. Now we are very much okay with our learners.',memo:'Single leadership change produces dramatic resource change; head teacher as system-level enabler/barrier'},
+  {pid:'T08',theme:'T3',code:'clustering_contradiction',level:'Latent',extract:'These pathways, it is not working because most of the schools do not have facilities. Monanda had taken the sports pathway; it does not have a field, no teachers. The school has 13 learners.',memo:'Pathway rhetoric exposed as hollow; policy aspiration unmoored from material conditions'},
+  {pid:'T07',theme:'T4',code:'co_teaching',level:'Semantic',extract:'We always have another teacher in the room. The co-teacher will make sure that the learner who is differently abled will get into the group, maybe by guiding him or her how to participate.',memo:'Co-teaching as structural enabler; only 2 schools in sample have this; dramatically expands adaptation feasibility frontier'},
+  {pid:'T05',theme:'T4',code:'cooperation_vs_collaboration',level:'Latent',extract:'Schemes of work are just done because we are being followed. Actually, to be honest, we do them when we feel like there is pressure or there\'s a need. If nobody\'s coming to check them, we don\'t do that.',memo:'Explicit compliance-not-collaboration confession; formal structures performed for inspection, not used for genuine planning'},
+  {pid:'T01',theme:'T5',code:'unpaid_extra_time',level:'Semantic',extract:'I will still use it. My learners always come first. You\'ll find me in the class at 6:30 in the morning. I\'ll come to school every Saturday at 7:00 without anyone paying me anything, just to try and reach out to the child.',memo:'22-year veteran; child-first explicitly articulated as the logic behind unpaid labour; not exhaustion but orientation'},
+  {pid:'T04',theme:'T5',code:'vocation_heart',level:'Latent',extract:'When teaching learners with special needs, it comes from your heart. Kama huna roho ya utu, ata kama ume-train on special needs, you cannot teach.',memo:'Explicit "ni moyo" articulation; SNE context produces most direct naming of vocation'},
+  {pid:'T08',theme:'T5',code:'resilience_under_constraint',level:'Latent',extract:'It is costly, but now you have to do it. You just do it. You just close your eyes and do it. Because it\'s enhancing your work.',memo:'"Close your eyes and do it": striking phrase; resilience framed as moral compulsion not professional requirement'},
+  {pid:'T03',theme:'T6',code:'identification_no_diagnosis',level:'Semantic',extract:'This boy cannot be able to pick something from the board, transferring whatever you\'ve written to his book is a challenge. I\'ve been with him for three years now. I\'ve tried my best, but I don\'t know what to do.',memo:'Most poignant account of isolation without specialist support; three-year duration makes the absence of diagnosis most visible'},
+  {pid:'T03',theme:'T6',code:'strength_based_framing',level:'Latent',extract:'Even shaping letters, he used to shape them very well. He also liked drawing and colouring. He could memorise some words and name the pictures. He can make copies of a whole chart, well drawn and coloured.',memo:'Spontaneous strength-based observation about non-verbal autistic learner; arriving at neurodiversity paradigm\'s core claim without training in it'},
+  {pid:'T04',theme:'T6',code:'parent_denial',level:'Semantic',extract:'Some parents, they don\'t accept that my child has special needs. When I tried to talk with the headteacher, he said, Wewe wachana na hawa watoto, wakae. Most of the headteachers ni wale wa kitambo, they don\'t understand the need.',memo:'Double barrier: parent denial + leadership dismissal; systemic reproduction of medical model through institutional non-response'},
+  {pid:'T01',theme:'T7',code:'hybrid_system',level:'Semantic',extract:'It\'s a hybrid. It\'s a hybrid of what is the intended and what is actual. Once you now have Grade 9 as the candidate class, KJSEA preparation will require a lot of time.',memo:'"Hybrid" is T01\'s own conceptual invention; not a criticism of CBE but an accurate phenomenological description of how it is enacted'},
+  {pid:'T05',theme:'T7',code:'aspirational_vs_enacted',level:'Latent',extract:'To be honest, we were teaching the learners to pass the exam. And since we have been doing it for a while, we are still doing it. And that\'s why it\'s going to affect us with the new curriculum, whereby we are not supposed to do that.',memo:'Confession of pedagogical inertia; the past system has colonised the new one; "we are not supposed to" shows awareness of contradiction'},
+  {pid:'T02',theme:'T7',code:'CBE_goodwill_despite_constraints',level:'Latent',extract:'This is a very good curriculum. I support it 100%. Mind you, this curriculum is not competitive; it is competency-based, we nurture what is inside the learner, not around him.',memo:'Simultaneous strong endorsement + extensive structural critique in same interview; double-consciousness most clearly visible in T02'}
+];
+
+// ── RENDER HELPERS ────────────────────────────────────────────────────────
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function hexRGB(h){const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);return r?`${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)}`:'200,200,200'}
+
+// ── BUILD PARTICIPANT TABLE ───────────────────────────────────────────────
+function buildPtab(){
+  const tb=document.getElementById('ptab');
+  tb.innerHTML=participants.map(p=>`<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:6px 9px"><span class="qpid ${p.id}">${p.id}</span></td>
+    <td style="padding:6px 9px"><span class="etag ${ctxMap[p.ctag]}">${p.ctx}</span></td>
+    <td style="padding:6px 9px;color:var(--cream);white-space:nowrap">${p.grade}</td>
+    <td style="padding:6px 9px;text-align:center;color:var(--cream)">${p.exp}</td>
+    <td style="padding:6px 9px;text-align:center;color:var(--cream)">${p.cls}</td>
+    <td style="padding:6px 9px;color:var(--tdim)">${p.sen}</td>
+  </tr>`).join('');
+}
+
+// ── BUILD THEMES ─────────────────────────────────────────────────────────
+function buildThemes(){
+  const c=document.getElementById('themes-container');
+  c.innerHTML=themes.map((t,i)=>{
+    const col=TC[t.id]; const rgb=hexRGB(col);
+    return`<div class="thc">
+      <div class="th-h">
+        <div class="th-num" style="background:rgba(${rgb},.16);color:${col};border:2px solid rgba(${rgb},.4)">${t.id}</div>
+        <div><div class="th-n">${esc(t.name)}</div><div class="th-l">${esc(t.lens)}</div></div>
+      </div>
+      <div class="th-d">${esc(t.desc)}</div>
+      <div class="chips">${t.codes.map(c=>`<span class="chip" style="background:rgba(${rgb},.12);color:${col}">${esc(c)}</span>`).join('')}</div>
+      <div class="th-tog" style="color:${col}" onclick="tq('tq${i}')">&#9656; Show quotes (${t.quotes.length})</div>
+      <div class="th-qp" id="tq${i}">${t.quotes.map(q=>`<div class="qc" style="border-left-color:${col}">
+        <div class="qt">"${esc(q.text)}"</div>
+        <div class="qm">
+          <span class="qpid ${q.pid}">${q.pid}</span>
+          ${q.codes.map(c=>`<span class="qtag">${esc(c)}</span>`).join('')}
+          ${q.ctx?`<span class="qctx">${esc(q.ctx)}</span>`:''}
+        </div>
+      </div>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+function tq(id){const p=document.getElementById(id);const tog=p.previousElementSibling;const o=p.classList.toggle('open');tog.innerHTML=tog.innerHTML.replace(/[▶▼]/,o?'▼':'▶')}
+
+// ── BUILD CODEBOOK ────────────────────────────────────────────────────────
+function buildCodebook(){
+  const c=document.getElementById('cb-container');
+  const themeLabels={T1:'Adaptation Ensembles',T2:'Inclusive Utility (3P)',T3:'Structural-Ecological Conditions',T4:'Collaboration',T5:'Teacher Agency and Moral Vocation',T6:'Neurodivergence Recognition',T7:'CBE Paradox'};
+  c.innerHTML=codebook.map(g=>`<div class="cg">
+    <div class="cg-h" style="border-left-color:${TC[g.theme]}">
+      <div class="cg-t">${g.theme} — ${themeLabels[g.theme]}</div>
+      <div class="cg-c">${g.codes.length} codes</div>
+    </div>
+    ${g.codes.map(cd=>`<div class="ci">
+      <div class="cn">${esc(cd.n)}</div>
+      <span class="clv ${cd.lv==='Semantic'?'lsem':'llat'}">${cd.lv}</span>
+      <div class="cd" style="margin-top:6px">${esc(cd.def)}</div>
+      <div class="cfl">
+        <div class="cfb"><div class="cff" style="width:${Math.round(cd.f/9*100)}%"></div></div>
+        <span class="cfn">${cd.f}/9</span>
+      </div>
+    </div>`).join('')}
+  </div>`).join('');
+}
+
+// ── BUILD V1 ──────────────────────────────────────────────────────────────
+function buildV1(){
+  const cols={ga:'rgba(212,168,67,.12)',gb:'rgba(78,143,202,.12)',gc:'rgba(74,171,138,.12)',gd:'rgba(107,91,171,.12)',ge:'rgba(196,91,91,.12)',gf:'rgba(212,120,67,.12)',gg:'rgba(107,171,107,.12)'};
+  const textc={ga:'#d4a843',gb:'#4e8fca',gc:'#4aab8a',gd:'#6b5bab',ge:'#c45b5b',gf:'#d47843',gg:'#6bab6b'};
+  Object.keys(v1Data).forEach(k=>{
+    const el=document.getElementById('v1'+k);
+    if(el) el.innerHTML=v1Data[k].map(c=>`<span class="cchip" style="background:${cols[k]};color:${textc[k]}">${esc(c)}</span>`).join('');
+  });
+}
+
+// ── BUILD V2 ──────────────────────────────────────────────────────────────
+function buildV2(){
+  const b=document.getElementById('v2-body');
+  b.innerHTML=v2Data.map(r=>{
+    const rgb=hexRGB(r.col);
+    return`<tr>
+      <td style="color:${r.col};font-weight:600;font-size:var(--fxs);white-space:nowrap">${esc(r.th)}</td>
+      <td><div class="chips" style="margin:0">${r.codes.map(c=>`<span class="chip" style="background:rgba(${rgb},.1);color:${r.col}">${esc(c)}</span>`).join('')}</div></td>
+      <td style="font-size:var(--fxs);color:var(--tdim)">${esc(r.merged)}</td>
+      <td style="font-size:var(--fxs);color:var(--a4)">${esc(r.dropped)}</td>
+      <td class="mnote">${esc(r.note)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── BUILD MEMOS ───────────────────────────────────────────────────────────
+function buildMemos(){
+  const c=document.getElementById('memos-container');
+  c.innerHTML=memos.map(m=>`<div class="am"><div class="am-d">${esc(m.date)}</div><div class="am-t">${m.text}</div></div>`).join('');
+}
+
+// ── CODING SPREADSHEET ────────────────────────────────────────────────────
+function filterCS(){
+  const fp=document.getElementById('fp').value;
+  const fth=document.getElementById('fth').value;
+  const flv=document.getElementById('flv').value;
+  const rows=csData.filter(r=>(!fp||r.pid===fp)&&(!fth||r.theme===fth)&&(!flv||r.level===flv));
+  document.getElementById('cs-count').textContent=`Showing ${rows.length} extract${rows.length!==1?'s':''}`;
+  const b=document.getElementById('cs-body');
+  b.innerHTML=rows.map(r=>{
+    const col=TC[r.theme]||'#d4a843';const rgb=hexRGB(col);
+    return`<tr>
+      <td><span class="qpid ${r.pid}">${r.pid}</span></td>
+      <td><div class="ext">"${esc(r.extract)}"</div></td>
+      <td><span class="ctag" style="color:${col}">${esc(r.code)}</span></td>
+      <td><span class="thtag" style="background:rgba(${rgb},.1);color:${col}">${r.theme}: ${TN[r.theme]}</span></td>
+      <td><span class="ctag" style="color:${r.level==='Latent'?'var(--a2)':'var(--a3)'}">${r.level}</span></td>
+      <td class="mnote">${esc(r.memo)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────
+const allQ=[];
+themes.forEach(t=>t.quotes.forEach(q=>allQ.push({...q,theme:t.id})));
+function doSearch(){
+  const kw=(document.getElementById('sq').value||'').trim().toLowerCase();
+  const pid=document.getElementById('sp').value;
+  const th=document.getElementById('sth').value;
+  const res=allQ.filter(q=>(!kw||q.text.toLowerCase().includes(kw)||(q.codes||[]).some(c=>c.toLowerCase().includes(kw)))&&(!pid||q.pid===pid)&&(!th||q.theme===th));
+  document.getElementById('src-c').textContent=`Showing ${res.length} quote${res.length!==1?'s':''}`;
+  document.getElementById('src-r').innerHTML=res.map(q=>{
+    const col=TC[q.theme]||'#d4a843';const rgb=hexRGB(col);
+    let txt=esc(q.text);
+    if(kw&&kw.length>1)txt=txt.replace(new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi'),'<span class="hi">$1</span>');
+    return`<div class="qc" style="border-left-color:${col}">
+      <div class="qt">"${txt}"</div>
+      <div class="qm">
+        <span class="qpid ${q.pid}">${q.pid}</span>
+        <span class="bx" style="background:rgba(${rgb},.1);color:${col};border:1px solid rgba(${rgb},.25)">${q.theme}: ${TN[q.theme]}</span>
+        ${(q.codes||[]).map(c=>`<span class="qtag">${esc(c)}</span>`).join('')}
+        ${q.ctx?`<span class="qctx">${esc(q.ctx)}</span>`:''}
+      </div>
+    </div>`;
+  }).join('')||'<div style="color:var(--tmut);padding:18px 0;font-size:var(--fsm)">No quotes match your filters.</div>';
+}
+
+// ── PANEL NAV ─────────────────────────────────────────────────────────────
+const pmap={dash:'p-dash',themes:'p-themes',codebook:'p-codebook',matrix:'p-matrix',map:'p-map',v1:'p-v1',v2:'p-v2',memos:'p-memos',coding:'p-coding',search:'p-search'};
+let csBuilt=false;
+function show(id,el){
+  Object.values(pmap).forEach(p=>{const e=document.getElementById(p);if(e)e.classList.remove('on')});
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const panel=document.getElementById(pmap[id]);
+  if(panel)panel.classList.add('on');
+  el.classList.add('active');
+  if(id==='coding'&&!csBuilt){csBuilt=true;filterCS()}
+  if(id==='search')doSearch();
+  if(window.innerWidth<=860)closeMob();
+}
+
+// ── SIDEBAR ───────────────────────────────────────────────────────────────
+let slim=false;
+function toggleSlim(){slim=!slim;document.getElementById('sb').classList.toggle('slim',slim);document.getElementById('stog').textContent=slim?'▶':'◀'}
+function openMob(){document.getElementById('sb').classList.add('mo');document.getElementById('ov').style.display='block'}
+function closeMob(){document.getElementById('sb').classList.remove('mo');document.getElementById('ov').style.display='none'}
+
+// ── CHARTS ────────────────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  Chart.defaults.color='#4e5e78';Chart.defaults.font.family='IBM Plex Sans';
+  const gc=id=>{const e=document.getElementById(id);return e?e.getContext('2d'):null};
+
+  // Theme frequency
+  const fc=gc('cFreq');
+  if(fc)new Chart(fc,{type:'bar',data:{labels:['T1','T2','T3','T4','T5','T6','T7'],datasets:[{data:[9,9,9,8,9,7,9],backgroundColor:Object.values(TC).map(c=>`${c}b0`),borderColor:Object.values(TC),borderWidth:1,borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:t=>'Theme '+t[0].label+': '+Object.values(TN)[t[0].dataIndex]}}},scales:{y:{beginAtZero:true,max:9,ticks:{stepSize:1},grid:{color:'rgba(255,255,255,.04)'}},x:{grid:{display:false}}}}});
+
+  // IU radar by context
+  const iu=gc('cIU');
+  if(iu)new Chart(iu,{type:'radar',data:{labels:['Presence\n(avg)','Participation\n(avg)','Progression\n(avg)','Belonging\n(avg)','Progression\n(small wins)'],datasets:[
+    {label:'Urban',data:[4.8,4.2,3.8,4.5,4.0],borderColor:'rgba(78,143,202,.8)',backgroundColor:'rgba(78,143,202,.1)',pointBackgroundColor:'#4e8fca',pointRadius:3},
+    {label:'Rural',data:[3.2,3.8,3.5,3.0,3.8],borderColor:'rgba(107,171,107,.8)',backgroundColor:'rgba(107,171,107,.1)',pointBackgroundColor:'#6bab6b',pointRadius:3},
+    {label:'SNE',data:[4.5,4.8,4.2,4.8,5.0],borderColor:'rgba(196,91,91,.8)',backgroundColor:'rgba(196,91,91,.1)',pointBackgroundColor:'#c45b5b',pointRadius:3},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:10,font:{size:10}}}},scales:{r:{suggestedMin:0,suggestedMax:5,ticks:{stepSize:1,font:{size:9}},pointLabels:{font:{size:9}},grid:{color:'rgba(255,255,255,.06)'}}}}});
+
+  // Context doughnut
+  const cc=gc('cCtx');
+  if(cc)new Chart(cc,{type:'doughnut',data:{labels:['Urban (4)','Rural (4)','Semi-Urban (1)'],datasets:[{data:[4,4,1],backgroundColor:['rgba(78,143,202,.7)','rgba(107,171,107,.7)','rgba(212,168,67,.7)'],borderColor:['#4e8fca','#6bab6b','#d4a843'],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:9,padding:9,font:{size:10}}}}}});
+
+  // Code level
+  const lv=gc('cLev');
+  if(lv)new Chart(lv,{type:'doughnut',data:{labels:['Semantic (23)','Latent (11)'],datasets:[{data:[23,11],backgroundColor:['rgba(74,171,138,.7)','rgba(107,91,171,.7)'],borderColor:['#4aab8a','#6b5bab'],borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:9,padding:9,font:{size:10}}}}}});
+
+  // Adaptation type frequency (horizontal bar)
+  const adEl=document.getElementById('cAdapt');
+  if(adEl){const ctx=adEl.getContext('2d');new Chart(ctx,{type:'bar',data:{
+    labels:['Heterog. grouping','Hands-on','Task chunking','Visual/multimodal','Peer pairing','ICT (phone)','Flex. time','Scaffolding','Seating prox.','Translanguaging','Oral alt.','Music/songs','Clay modelling'],
+    datasets:[{data:[9,8,8,7,7,7,7,6,6,5,4,4,3],backgroundColor:'rgba(212,168,67,.6)',borderColor:'#d4a843',borderWidth:1,borderRadius:3}]
+  },options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{max:9,ticks:{stepSize:1},grid:{color:'rgba(255,255,255,.04)'}},y:{grid:{display:false},ticks:{font:{size:9}}}}}})}
+
+  // Radar (matrix)
+  const rr=gc('cRadar');
+  if(rr)new Chart(rr,{type:'radar',data:{labels:['T1 Adapt.','T2 3P','T3 Struct.','T4 Collab.','T5 Agency','T6 Neuro.','T7 CBE'],datasets:[
+    {label:'Urban',data:[4,4,3,4,4,3,3],borderColor:'rgba(78,143,202,.8)',backgroundColor:'rgba(78,143,202,.1)',pointBackgroundColor:'#4e8fca',pointRadius:3},
+    {label:'Rural',data:[3.5,4,4,3,4,3.5,4],borderColor:'rgba(107,171,107,.8)',backgroundColor:'rgba(107,171,107,.1)',pointBackgroundColor:'#6bab6b',pointRadius:3},
+    {label:'SNE',data:[4.5,4.5,4,3,5,5,1],borderColor:'rgba(196,91,91,.8)',backgroundColor:'rgba(196,91,91,.1)',pointBackgroundColor:'#c45b5b',pointRadius:3},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{boxWidth:9,font:{size:10}}}},scales:{r:{suggestedMin:0,suggestedMax:5,ticks:{stepSize:1,font:{size:9}},pointLabels:{font:{size:9}},grid:{color:'rgba(255,255,255,.06)'}}}}});
+
+  // Build all content
+  buildPtab();buildThemes();buildCodebook();buildV1();buildV2();buildMemos();
+});
+</script>
+</body>
+</html>

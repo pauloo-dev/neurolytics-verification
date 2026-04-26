@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QualSight Analytics — Chapter 4 Instrument | 2812274M</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e1117;--surface:#161b27;--surface2:#1e2535;--surface3:#252e42;
+  --border:#2a3348;--gold:#d4a843;--gold-dim:rgba(212,168,67,0.14);
+  --cream:#f0ead6;--text:#e8e4d9;--text-dim:#8a9ab5;--text-muted:#5a6a82;
+  --a1:#4e8fca;--a2:#6b5bab;--a3:#4aab8a;--a4:#c45b5b;--a5:#d47843;--a6:#6bab6b;--a7:#ab6b9a;
+  --r:8px;
+  --fs:clamp(11px,1.9vw,13px);--fss:clamp(9px,1.6vw,11px);--fsl:clamp(13px,2.4vw,16px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:var(--fs);overflow:hidden;height:100vh}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+#shell{display:flex;height:100vh}
+#sb{width:230px;min-width:230px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .2s}
+#sb.slim{width:52px;min-width:52px}
+#sb.slim .nt,.sb.slim .sl,.sb.slim .sf{display:none}
+.sb-head{padding:18px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.logo-icon{color:var(--gold);font-size:19px;flex-shrink:0}
+.logo-word{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold)}
+.logo-sub{font-size:9px;color:var(--text-muted);line-height:1.4}
+.sb-nav{flex:1;overflow-y:auto;padding:10px 0}
+.nl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);padding:7px 16px 3px;font-weight:600}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 16px;cursor:pointer;color:var(--text-dim);font-size:var(--fss);border-left:3px solid transparent;transition:all .15s;white-space:nowrap}
+.ni:hover{color:var(--text);background:var(--surface2)}
+.ni.active{color:var(--gold);background:var(--gold-dim);border-left-color:var(--gold)}
+.ni .ico{width:16px;text-align:center;flex-shrink:0;font-size:13px}
+.sf{padding:12px 16px;border-top:1px solid var(--border);font-size:9px;color:var(--text-muted);line-height:1.5}
+.slim-btn{cursor:pointer;padding:10px 0;display:flex;justify-content:center;color:var(--text-muted);border-top:1px solid var(--border);font-size:13px}
+.slim-btn:hover{color:var(--gold)}
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#tb{height:50px;min-height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px}
+.tb-title{font-family:'Playfair Display',serif;font-size:var(--fsl);color:var(--cream);font-weight:600}
+.tb-sub{font-size:9px;color:var(--text-muted)}
+.bx{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.bx-g{background:var(--gold-dim);color:var(--gold);border:1px solid rgba(212,168,67,.3)}
+.bx-b{background:rgba(78,143,202,.12);color:var(--a1);border:1px solid rgba(78,143,202,.3)}
+.panel{display:none;flex:1;overflow-y:auto;padding:clamp(14px,3vw,26px)}
+.panel.on{display:block}
+h2.pt{font-family:'Playfair Display',serif;font-size:clamp(17px,3vw,22px);color:var(--cream);margin-bottom:5px}
+.ps{font-size:var(--fss);color:var(--text-dim);line-height:1.6;margin-bottom:18px;max-width:680px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:clamp(14px,2.5vw,20px);margin-bottom:16px}
+.card h3{font-family:'Playfair Display',serif;font-size:var(--fsl);color:var(--cream);margin-bottom:8px}
+.dv{height:1px;background:var(--border);margin:14px 0}
+/* GRIDS */
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px;margin-bottom:16px}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:12px;margin-bottom:16px}
+/* STAT */
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.sc.g::before{background:var(--gold)}.sc.b::before{background:var(--a1)}
+.sc.gr::before{background:var(--a3)}.sc.p::before{background:var(--a2)}
+.sv{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,32px);color:var(--cream);font-weight:700;line-height:1}
+.sl{font-size:9px;color:var(--text-muted);margin-top:5px;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.sn{font-size:10px;color:var(--text-dim);margin-top:3px}
+/* TABLES */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.t{border-collapse:collapse;width:100%;min-width:600px}
+table.t th{background:var(--surface2);font-size:9px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;border-bottom:2px solid var(--border);text-align:left;white-space:nowrap}
+table.t td{padding:8px 10px;border-bottom:1px solid var(--border);font-size:var(--fss);vertical-align:top}
+table.t tr:hover td{background:rgba(255,255,255,.02)}
+/* VERSION CARDS */
+.vc{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.vc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.vbadge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid}
+.v1b{border-color:var(--a4);color:var(--a4);background:rgba(196,91,91,.08)}
+.v2b{border-color:var(--a5);color:var(--a5);background:rgba(212,120,67,.08)}
+.vfb{border-color:var(--gold);color:var(--gold);background:var(--gold-dim)}
+.vc-date{font-size:9px;color:var(--text-muted);margin-left:auto}
+.vc-desc{font-size:var(--fss);color:var(--text-dim);line-height:1.6;margin-bottom:10px}
+.code-chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:600}
+/* CODING TABLE */
+.ct-pid{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;border:1px solid;white-space:nowrap}
+.T01{border-color:#4e8fca;color:#4e8fca;background:rgba(78,143,202,.08)}
+.T02{border-color:#4aab8a;color:#4aab8a;background:rgba(74,171,138,.08)}
+.T03{border-color:#d47843;color:#d47843;background:rgba(212,120,67,.08)}
+.T04{border-color:#6b5bab;color:#6b5bab;background:rgba(107,91,171,.08)}
+.T05{border-color:#c45b5b;color:#c45b5b;background:rgba(196,91,91,.08)}
+.T06{border-color:#d4a843;color:#d4a843;background:rgba(212,168,67,.08)}
+.T07{border-color:#6bab6b;color:#6bab6b;background:rgba(107,171,107,.08)}
+.T08{border-color:#ab6b9a;color:#ab6b9a;background:rgba(171,107,154,.08)}
+.T09{border-color:#5a9ab5;color:#5a9ab5;background:rgba(90,154,181,.08)}
+.extract{font-style:italic;color:var(--cream);line-height:1.55;font-size:var(--fss)}
+.code-tag{font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,.07);color:var(--text-dim);font-weight:500;white-space:nowrap}
+.theme-tag{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:600;white-space:nowrap}
+.memo-cell{font-size:9px;color:var(--text-muted);line-height:1.5;max-width:200px}
+/* MEMBER CHECKING */
+.mc-card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.mc-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.mc-num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:12px;font-weight:700;flex-shrink:0}
+.mc-title{font-family:'Playfair Display',serif;font-size:var(--fsl);color:var(--cream);font-weight:600}
+.mc-lens{font-size:9px;color:var(--text-muted);margin-top:2px}
+.mc-body{font-size:var(--fss);color:var(--text-dim);line-height:1.7}
+.mc-q{background:var(--surface2);border-radius:6px;padding:10px 12px;margin-top:12px}
+.mc-q p{font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.mc-q ul{padding-left:16px}
+.mc-q li{font-size:var(--fss);color:var(--text-dim);line-height:1.6;margin-bottom:3px}
+/* MEMO */
+.am{background:rgba(212,168,67,.06);border:1px solid rgba(212,168,67,.2);border-radius:var(--r);padding:14px 16px;margin-bottom:10px}
+.am-date{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold);margin-bottom:6px;font-weight:500}
+.am-text{font-size:var(--fss);color:var(--text-dim);line-height:1.65}
+.am-text strong{color:var(--gold)}
+/* FILTER */
+.fb{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.fi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:7px 11px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:var(--fss);outline:none;cursor:pointer}
+.fi:focus{border-color:var(--gold)}
+.fi option{background:var(--surface2)}
+.sr{font-size:10px;color:var(--text-muted);margin-bottom:10px}
+.hi{background:rgba(212,168,67,.25);color:var(--gold);border-radius:2px;padding:0 2px}
+/* MOBILE */
+#hm{display:none;background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:19px;padding:6px}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90}
+@media(max-width:700px){
+  #sb{position:fixed;left:0;top:0;height:100%;z-index:200;transform:translateX(-100%);transition:transform .2s;width:240px!important;min-width:240px!important}
+  #sb.mo{transform:translateX(0)}
+  #sb.slim .nt,.sb-head .logo-word,.sb-head .logo-sub{display:block!important}
+  .ni .nt{display:block!important}
+  .slim-btn{display:none}
+  #hm{display:flex}
+  #ov{display:block;display:none}
+  .g4{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div id="ov" onclick="closeMob()"></div>
+<div id="shell">
+<nav id="sb">
+  <div class="sb-head">
+    <span class="logo-icon">◈</span>
+    <div>
+      <div class="logo-word">QualSight Analytics</div>
+      <div class="logo-sub">Chapter 4 Instrument<br>2812274M · Nakuru 2026</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="nl">Overview</div>
+    <div class="ni active" onclick="show('overview',this)"><span class="ico">◈</span><span class="nt">Dashboard</span></div>
+    <div class="nl">Audit Trail</div>
+    <div class="ni" onclick="show('v1',this)"><span class="ico">①</span><span class="nt">Codebook v1 — Open</span></div>
+    <div class="ni" onclick="show('v2',this)"><span class="ico">②</span><span class="nt">Codebook v2 — Focused</span></div>
+    <div class="ni" onclick="show('vf',this)"><span class="ico">③</span><span class="nt">Codebook Final</span></div>
+    <div class="ni" onclick="show('memos',this)"><span class="ico">✎</span><span class="nt">Analytic Memos</span></div>
+    <div class="nl">Analysis</div>
+    <div class="ni" onclick="show('coding',this)"><span class="ico">⊞</span><span class="nt">Coding Spreadsheet</span></div>
+    <div class="nl">Member Checking</div>
+    <div class="ni" onclick="show('mc',this)"><span class="ico">◎</span><span class="nt">Theme Summaries</span></div>
+  </div>
+  <div class="sf">MSc Education · Univ. of Glasgow<br>Beyond the Blueprint · n=9</div>
+  <div class="slim-btn" id="sb-tog" onclick="toggleSlim()">◀</div>
+</nav>
+
+<div id="main">
+<div id="tb">
+  <button id="hm" onclick="openMob()">☰</button>
+  <div>
+    <div class="tb-title">Analytical Instrument — Reflexive Thematic Analysis</div>
+    <div class="tb-sub">Audit trail · Codebook versions · Coding spreadsheet · Member-checking summaries</div>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:6px;flex-shrink:0">
+    <span class="bx bx-g">7 Themes</span>
+    <span class="bx bx-b">34 Codes</span>
+  </div>
+</div>
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<div id="p-overview" class="panel on">
+  <h2 class="pt">Analysis Dashboard</h2>
+  <p class="ps">This instrument documents the complete analytical process for Chapter 4: from initial open coding through to finalised themes, with analytic memos, a coding spreadsheet, and member-checking summaries. Use the sidebar to navigate between audit trail layers.</p>
+  <div class="g4">
+    <div class="sc g"><div class="sv">3</div><div class="sl">Codebook Versions</div><div class="sn">v1 → v2 → Final</div></div>
+    <div class="sc b"><div class="sv">9</div><div class="sl">Participants</div><div class="sn">T01–T09 · Nakuru County</div></div>
+    <div class="sc gr"><div class="sv">7</div><div class="sl">Final Themes</div><div class="sn">Reflexive RTA</div></div>
+    <div class="sc p"><div class="sv">34</div><div class="sl">Final Codes</div><div class="sn">Semantic + latent</div></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <h3>Analytic Logic</h3>
+      <div class="dv"></div>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px"><strong style="color:var(--cream)">Approach:</strong> Reflexive thematic analysis (Braun &amp; Clarke, 2006; 2021)</p>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px"><strong style="color:var(--cream)">Orientation:</strong> Abductive — inductively led by data patterns, simultaneously in dialogue with sensitising concepts (Kennedy &amp; Thornberg, 2018)</p>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px"><strong style="color:var(--cream)">Code levels:</strong> Semantic (what teachers said they did) + Latent (what accounts implied about values and conditions)</p>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65"><strong style="color:var(--cream)">Sensitising lenses:</strong> UDL · Ecological Systems · Inclusive Utility (3P) · VBE/DisCrit · Social Constructivism</p>
+    </div>
+    <div class="card">
+      <h3>Audit Trail Components</h3>
+      <div class="dv"></div>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px">① <strong style="color:var(--cream)">Codebook v1</strong> — 47 initial open codes generated from first full reading of all 9 transcripts</p>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px">② <strong style="color:var(--cream)">Codebook v2</strong> — 22 focused codes after first consolidation pass; candidate themes identified</p>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px">③ <strong style="color:var(--cream)">Final Codebook</strong> — 34 codes across 7 themes; definitions and frequencies confirmed</p>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px">④ <strong style="color:var(--cream)">Analytic Memos</strong> — 5 session memos documenting interpretive decisions</p>
+      <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65">⑤ <strong style="color:var(--cream)">Coding Spreadsheet</strong> — curated extracts from all 9 transcripts, coded at both levels</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>How to Use This Document</h3>
+    <div class="dv"></div>
+    <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65">Navigate using the sidebar. The <strong style="color:var(--cream)">Audit Trail</strong> panels show the evolution of coding from initial open codes through to the final thematic structure — this is what you show the examiner as evidence of rigorous, iterative analysis. The <strong style="color:var(--cream)">Coding Spreadsheet</strong> shows curated key extracts from all interviews with codes and memos attached — this is your working analytical document. The <strong style="color:var(--cream)">Member-Checking Summaries</strong> are the plain-language theme summaries ready to send to T03, T04, and T09 via WhatsApp.</p>
+  </div>
+</div>
+
+<!-- ═══════════════ CODEBOOK V1 ═══════════════ -->
+<div id="p-v1" class="panel">
+  <h2 class="pt">Codebook Version 1 — Initial Open Codes</h2>
+  <p class="ps">Generated from first full read-through of all 9 transcripts. Raw, numerous, and overlapping — as expected at this stage. 47 initial codes before any consolidation. Each code is close to participants' own language.</p>
+  <div class="vc">
+    <div class="vc-head">
+      <span class="vbadge v1b">v1.0 · Initial</span>
+      <span style="font-size:10px;color:var(--text-dim)">First reading — all 9 transcripts · 47 codes</span>
+      <span class="vc-date">Session 1</span>
+    </div>
+    <div class="vc-desc">These codes are descriptive and data-proximate. Nothing is excluded at this stage — the aim is breadth, not parsimony. Many will be merged, renamed, or dropped in v2.</div>
+    <div style="margin-bottom:8px;font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">GROUP A — What teachers do in classrooms</div>
+    <div class="code-chips" style="margin-bottom:12px">
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">grouping by mixed ability</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">language switching (Kiswahili/Kikuyu)</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">seating near teacher</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">extra/flexible time</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">peer pairing/peer help</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">using phone/projector for visual</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">clay modelling</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">songs/rhymes/music</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">visual aids / wall charts</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">task chunking</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">oral alternatives to writing</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">simplified instructions</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">hands-on / practical activities</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">I do / we do / you do (scaffolding)</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">repeating lesson / re-teaching</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">flashcards</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">taking learner to external workshop</span>
+      <span class="chip" style="background:rgba(212,168,67,.12);color:var(--gold)">drawing / matching tasks</span>
+    </div>
+    <div style="margin-bottom:8px;font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">GROUP B — How teachers judge it working (3P)</div>
+    <div class="code-chips" style="margin-bottom:12px">
+      <span class="chip" style="background:rgba(78,143,202,.12);color:var(--a1)">child comes every day / loves school</span>
+      <span class="chip" style="background:rgba(78,143,202,.12);color:var(--a1)">child participates / hand up</span>
+      <span class="chip" style="background:rgba(78,143,202,.12);color:var(--a1)">small wins celebrated</span>
+      <span class="chip" style="background:rgba(78,143,202,.12);color:var(--a1)">vocabulary growth / new words</span>
+      <span class="chip" style="background:rgba(78,143,202,.12);color:var(--a1)">dropout / seasonal absence</span>
+      <span class="chip" style="background:rgba(78,143,202,.12);color:var(--a1)">belongs in the room / accepted by peers</span>
+      <span class="chip" style="background:rgba(78,143,202,.12);color:var(--a1)">counting to 3 is enough progress</span>
+      <span class="chip" style="background:rgba(78,143,202,.12);color:var(--a1)">watching but not engaging</span>
+    </div>
+    <div style="margin-bottom:8px;font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">GROUP C — Constraints / structural issues</div>
+    <div class="code-chips" style="margin-bottom:12px">
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">no Wi-Fi / no electricity</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">broken / outdated tablets</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">class sizes 60–90</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">KJSEA exam pressure</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">no social workers</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">retooling incomplete / 20%</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">head teacher blocking SNE support</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">clerical/paperwork burden</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">teacher mental health / stress</span>
+      <span class="chip" style="background:rgba(74,171,138,.12);color:var(--a3)">no assistive technology</span>
+    </div>
+    <div style="margin-bottom:8px;font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">GROUP D — Collaboration</div>
+    <div class="code-chips" style="margin-bottom:12px">
+      <span class="chip" style="background:rgba(107,91,171,.12);color:var(--a2)">WhatsApp staff/parent groups</span>
+      <span class="chip" style="background:rgba(107,91,171,.12);color:var(--a2)">subject panels (once per term)</span>
+      <span class="chip" style="background:rgba(107,91,171,.12);color:var(--a2)">co-teaching / two teachers in room</span>
+      <span class="chip" style="background:rgba(107,91,171,.12);color:var(--a2)">parent resistance / denying SEN</span>
+      <span class="chip" style="background:rgba(107,91,171,.12);color:var(--a2)">KICD retooling attended/valued</span>
+      <span class="chip" style="background:rgba(107,91,171,.12);color:var(--a2)">consulting lower primary teacher</span>
+      <span class="chip" style="background:rgba(107,91,171,.12);color:var(--a2)">Friday TPD sessions</span>
+    </div>
+    <div style="margin-bottom:8px;font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">GROUP E — Teacher motivation / moral drive</div>
+    <div class="code-chips" style="margin-bottom:12px">
+      <span class="chip" style="background:rgba(196,91,91,.12);color:var(--a4)">coming in at 6:30am / Saturdays</span>
+      <span class="chip" style="background:rgba(196,91,91,.12);color:var(--a4)">buying materials with own money</span>
+      <span class="chip" style="background:rgba(196,91,91,.12);color:var(--a4)">"ni moyo" — it is the heart</span>
+      <span class="chip" style="background:rgba(196,91,91,.12);color:var(--a4)">child first philosophy</span>
+      <span class="chip" style="background:rgba(196,91,91,.12);color:var(--a4)">closing eyes and just doing it</span>
+    </div>
+    <div style="margin-bottom:8px;font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">GROUP F — Neurodivergence recognition</div>
+    <div class="code-chips" style="margin-bottom:12px">
+      <span class="chip" style="background:rgba(212,120,67,.12);color:var(--a5)">identifying autism without diagnosis</span>
+      <span class="chip" style="background:rgba(212,120,67,.12);color:var(--a5)">dyslexia / dysgraphia named</span>
+      <span class="chip" style="background:rgba(212,120,67,.12);color:var(--a5)">eye-hand coordination difficulty</span>
+      <span class="chip" style="background:rgba(212,120,67,.12);color:var(--a5)">strength-based noticing (art, sport)</span>
+      <span class="chip" style="background:rgba(212,120,67,.12);color:var(--a5)">parent refusing referral</span>
+      <span class="chip" style="background:rgba(212,120,67,.12);color:var(--a5)">ADHD-type attention issues</span>
+    </div>
+    <div style="margin-bottom:8px;font-size:9px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px">GROUP G — CBE system tensions</div>
+    <div class="code-chips">
+      <span class="chip" style="background:rgba(107,171,107,.12);color:var(--a6)">CBC is good in principle</span>
+      <span class="chip" style="background:rgba(107,171,107,.12);color:var(--a6)">clustering still merit-based</span>
+      <span class="chip" style="background:rgba(107,171,107,.12);color:var(--a6)">still teaching for exam</span>
+      <span class="chip" style="background:rgba(107,171,107,.12);color:var(--a6)">"hybrid system" (T01 term)</span>
+      <span class="chip" style="background:rgba(107,171,107,.12);color:var(--a6)">parents still 8-4-4 mindset</span>
+      <span class="chip" style="background:rgba(107,171,107,.12);color:var(--a6)">pathway schools lack facilities</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ CODEBOOK V2 ═══════════════ -->
+<div id="p-v2" class="panel">
+  <h2 class="pt">Codebook Version 2 — Focused Codes &amp; Candidate Themes</h2>
+  <p class="ps">After first consolidation pass. 47 initial codes reduced to 22 focused codes grouped into 7 candidate themes. Overlapping codes merged; data-distant codes dropped; latent-level codes introduced.</p>
+  <div class="vc">
+    <div class="vc-head">
+      <span class="vbadge v2b">v2.0 · Consolidated</span>
+      <span style="font-size:10px;color:var(--text-dim)">First consolidation — 22 codes · 7 candidate themes</span>
+      <span class="vc-date">Session 2</span>
+    </div>
+    <div class="vc-desc">Key consolidation decisions: (1) 18 adaptation-specific codes merged into "adaptation ensembles" cluster; (2) "language switching" retained as standalone code — not just a strategy but a translanguaging practice with its own equity dimension; (3) latent codes introduced for "vocation" and "moral cost" that were implied but not explicit in v1; (4) "pathway promise vs reality" split from general CBE tension to capture T08's specific account.</div>
+  </div>
+  <div class="tw">
+    <table class="t">
+      <thead>
+        <tr>
+          <th>Candidate Theme</th>
+          <th>V2 Codes (consolidated)</th>
+          <th>Merged from v1</th>
+          <th>Dropped from v1</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--gold);font-weight:600">CT1: Adaptation Ensembles</td>
+          <td><div class="code-chips"><span class="chip" style="background:rgba(212,168,67,.1);color:var(--gold)">multimodal teaching</span><span class="chip" style="background:rgba(212,168,67,.1);color:var(--gold)">translanguaging</span><span class="chip" style="background:rgba(212,168,67,.1);color:var(--gold)">heterogeneous grouping</span><span class="chip" style="background:rgba(212,168,67,.1);color:var(--gold)">scaffolding</span><span class="chip" style="background:rgba(212,168,67,.1);color:var(--gold)">seating/proximity</span></div></td>
+          <td style="color:var(--text-dim);font-size:9px">visual aids + wall charts + projector → multimodal; I do/we do/you do + peer pairing → scaffolding</td>
+          <td style="color:var(--a4);font-size:9px">flashcards (absorbed into multimodal)</td>
+          <td class="memo-cell">Group of individual adaptations reconceived as bundles per Florian (2014) IPAA logic</td>
+        </tr>
+        <tr>
+          <td style="color:var(--a1);font-weight:600">CT2: Reading Inclusive Utility</td>
+          <td><div class="code-chips"><span class="chip" style="background:rgba(78,143,202,.1);color:var(--a1)">presence indicators</span><span class="chip" style="background:rgba(78,143,202,.1);color:var(--a1)">participation markers</span><span class="chip" style="background:rgba(78,143,202,.1);color:var(--a1)">progression signals</span><span class="chip" style="background:rgba(78,143,202,.1);color:var(--a1)">belonging</span></div></td>
+          <td style="color:var(--text-dim);font-size:9px">small wins + vocabulary growth + counting to 3 → progression signals; accepts by peers + loves school → belonging</td>
+          <td style="color:var(--a4);font-size:9px">—</td>
+          <td class="memo-cell">3P framework operationalised here as an analytic lens, not just a scaffold</td>
+        </tr>
+        <tr>
+          <td style="color:var(--a3);font-weight:600">CT3: Structural-Ecological Constraints</td>
+          <td><div class="code-chips"><span class="chip" style="background:rgba(74,171,138,.1);color:var(--a3)">resource scarcity</span><span class="chip" style="background:rgba(74,171,138,.1);color:var(--a3)">technology gap</span><span class="chip" style="background:rgba(74,171,138,.1);color:var(--a3)">assessment pressure</span><span class="chip" style="background:rgba(74,171,138,.1);color:var(--a3)">retooling inadequacy</span><span class="chip" style="background:rgba(74,171,138,.1);color:var(--a3)">leadership variability</span></div></td>
+          <td style="color:var(--text-dim);font-size:9px">no Wi-Fi + broken tablets + no AT → technology gap; class 60-90 + no TA → resource scarcity</td>
+          <td style="color:var(--a4);font-size:9px">clerical burden (→ absorbed into assessment pressure)</td>
+          <td class="memo-cell">Bronfenbrenner lens applied — codes now labelled by system level they operate at</td>
+        </tr>
+        <tr>
+          <td style="color:var(--a2);font-weight:600">CT4: Lateral Collaboration</td>
+          <td><div class="code-chips"><span class="chip" style="background:rgba(107,91,171,.1);color:var(--a2)">WhatsApp networks</span><span class="chip" style="background:rgba(107,91,171,.1);color:var(--a2)">subject panels</span><span class="chip" style="background:rgba(107,91,171,.1);color:var(--a2)">co-teaching</span><span class="chip" style="background:rgba(107,91,171,.1);color:var(--a2)">parental engagement</span></div></td>
+          <td style="color:var(--text-dim);font-size:9px">Friday TPD + KICD retooling → formal CPD (kept separate as a code)</td>
+          <td style="color:var(--a4);font-size:9px">consulting lower primary teacher (absorbed into subject panels)</td>
+          <td class="memo-cell">Distinction between cooperation (sharing) and collaboration (joint problem-solving) introduced at latent level</td>
+        </tr>
+        <tr>
+          <td style="color:var(--a4);font-weight:600">CT5: Moral Vocation</td>
+          <td><div class="code-chips"><span class="chip" style="background:rgba(196,91,91,.1);color:var(--a4)">child-first philosophy</span><span class="chip" style="background:rgba(196,91,91,.1);color:var(--a4)">personal financial cost</span><span class="chip" style="background:rgba(196,91,91,.1);color:var(--a4)">unpaid extra time</span><span class="chip" style="background:rgba(196,91,91,.1);color:var(--a4)">vocation/heart (latent)</span></div></td>
+          <td style="color:var(--text-dim);font-size:9px">6:30am + Saturdays → unpaid extra time; buying materials → personal cost; "ni moyo" → vocation (latent)</td>
+          <td style="color:var(--a4);font-size:9px">—</td>
+          <td class="memo-cell">Latent code "vocation/heart" not stated explicitly but implied across all 9 participants</td>
+        </tr>
+        <tr>
+          <td style="color:var(--a5);font-weight:600">CT6: Neurodivergence Recognition</td>
+          <td><div class="code-chips"><span class="chip" style="background:rgba(212,120,67,.1);color:var(--a5)">ID without diagnosis</span><span class="chip" style="background:rgba(212,120,67,.1);color:var(--a5)">strength-based observation</span><span class="chip" style="background:rgba(212,120,67,.1);color:var(--a5)">parent denial</span><span class="chip" style="background:rgba(212,120,67,.1);color:var(--a5)">labelling effects</span></div></td>
+          <td style="color:var(--text-dim);font-size:9px">autism + dyslexia + eye-hand coordination → ID without diagnosis; art/sport strength → strength-based</td>
+          <td style="color:var(--a4);font-size:9px">ADHD-type (absorbed into ID without diagnosis)</td>
+          <td class="memo-cell">Neurodiversity paradigm (Armstrong, 2012) applied as latent frame — difference vs deficit distinction</td>
+        </tr>
+        <tr>
+          <td style="color:var(--a6);font-weight:600">CT7: CBE Paradox</td>
+          <td><div class="code-chips"><span class="chip" style="background:rgba(107,171,107,.1);color:var(--a6)">aspirational vs enacted</span><span class="chip" style="background:rgba(107,171,107,.1);color:var(--a6)">hybrid system</span><span class="chip" style="background:rgba(107,171,107,.1);color:var(--a6)">pathway rhetoric</span><span class="chip" style="background:rgba(107,171,107,.1);color:var(--a6)">parental 8-4-4 mindset</span><span class="chip" style="background:rgba(107,171,107,.1);color:var(--a6)">CBE goodwill</span></div></td>
+          <td style="color:var(--text-dim);font-size:9px">clustering still merit-based + pathway schools no facilities → pathway rhetoric; CBC is good + still exam teaching → aspirational vs enacted</td>
+          <td style="color:var(--a4);font-size:9px">—</td>
+          <td class="memo-cell">"Hybrid system" retained as T01's own term — insider language with strong analytic purchase</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ FINAL CODEBOOK ═══════════════ -->
+<div id="p-vf" class="panel">
+  <h2 class="pt">Final Codebook — 7 Themes · 34 Codes</h2>
+  <p class="ps">Confirmed final structure. Each code includes definition, level (semantic/latent), and frequency across 9 participants.</p>
+  <div class="vc">
+    <div class="vc-head">
+      <span class="vbadge vfb">Final · Confirmed</span>
+      <span style="font-size:10px;color:var(--text-dim)">7 themes · 34 codes · 9 participants</span>
+      <span class="vc-date">Session 5</span>
+    </div>
+  </div>
+
+  <!-- T1 -->
+  <div class="card" style="border-left:3px solid var(--gold)">
+    <h3 style="color:var(--gold)">Theme 1: Adaptation Ensembles — Assembling the Feasible Frontier</h3>
+    <div class="dv"></div>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Code</th><th>Level</th><th>Definition</th><th>Freq.</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">heterogeneous_grouping</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Deliberate mixing of ability levels within groups; rejecting homogeneous streaming in favour of collaborative peer-mediated learning</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">9/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">translanguaging</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Code-switching into Kiswahili or Kikuyu to scaffold concepts; individual initiative, not policy; sometimes covert</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">5/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">visual_multimodal</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Projectors, pictorials, wall charts, videos downloaded at own expense to supplement verbal instruction</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">7/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">task_chunking</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Breaking tasks into sequential smaller units; simplified instructions; step-by-step delivery</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">8/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">peer_pairing</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Deliberate pairing of struggling learner with understanding peer; social scaffolding without classroom extraction</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">7/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">seating_proximity</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Positioning neurodivergent or struggling learners near teacher's desk, away from windows/doors</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">6/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">scaffolding_ido_wedo_youdo</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Gradual release of responsibility: teacher models → co-constructs → releases. Named explicitly by T03</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">6/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">flexible_extra_time</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Allowing task completion beyond lesson; oral alternatives; doubling reading test time</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">7/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">oral_alternatives</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Verbal response, dictation, or drawing as accommodation for learners with writing/motor difficulties</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">4/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">practical_handson</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Real-world activities (carpentry, cooking, field trips, everyday objects) making abstract concepts concrete</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">8/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">music_songs</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Songs, rhymes, musical patterns as mnemonic and engagement tools for reluctant/struggling learners</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">4/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">modelling_clay_objects</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Physical manipulation of clay, letter shapes, number forms; fine motor development; abstract to tangible</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">3/9</td></tr>
+        <tr><td style="color:var(--gold);font-family:'IBM Plex Mono',monospace;font-size:10px">ICT_personal_phone</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Teacher's personal smartphone used to search, download, or display digital content; hidden personal cost</td><td style="color:var(--cream);font-weight:600;white-space:nowrap">7/9</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- T2 -->
+  <div class="card" style="border-left:3px solid var(--a1)">
+    <h3 style="color:var(--a1)">Theme 2: Inclusive Utility in Practice — Reading the 3Ps</h3>
+    <div class="dv"></div>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Code</th><th>Level</th><th>Definition</th><th>Freq.</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--a1);font-family:'IBM Plex Mono',monospace;font-size:10px">3P_presence</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Physical attendance and affective sense of belonging. Urban: near-100%. Rural: seasonal variability from farm labour and poverty</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+        <tr><td style="color:var(--a1);font-family:'IBM Plex Mono',monospace;font-size:10px">3P_participation</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Active engagement with content, materials, or peers. Presence ≠ participation — noted by several teachers</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+        <tr><td style="color:var(--a1);font-family:'IBM Plex Mono',monospace;font-size:10px">3P_progression</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Forward movement measured through small observable wins more than test scores; de facto competency alignment</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+        <tr><td style="color:var(--a1);font-family:'IBM Plex Mono',monospace;font-size:10px">celebrating_small_wins</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Explicit affirmation of micro-milestones as motivational and relational tools; redefining what counts as progress</td><td style="color:var(--cream);font-weight:600">6/9</td></tr>
+        <tr><td style="color:var(--a1);font-family:'IBM Plex Mono',monospace;font-size:10px">belonging</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Emotional safety and peer acceptance as preconditions for participation; teachers actively construct this before expecting engagement</td><td style="color:var(--cream);font-weight:600">7/9</td></tr>
+        <tr><td style="color:var(--a1);font-family:'IBM Plex Mono',monospace;font-size:10px">dropout_disengagement</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Withdrawal from schooling: physical (T05: ~2%; T08: seasonal) or psychological (silent Grade 9 withdrawal)</td><td style="color:var(--cream);font-weight:600">3/9</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- T3 -->
+  <div class="card" style="border-left:3px solid var(--a3)">
+    <h3 style="color:var(--a3)">Theme 3: Structural-Ecological Tensions — The Borrowed Architecture Problem</h3>
+    <div class="dv"></div>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Code</th><th>Level</th><th>Definition</th><th>Freq.</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">class_size_constraints</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Class sizes 31–90; all mainstream participants identify overcrowding as primary constraint on individual attention</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">resource_scarcity</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Absence of basic materials: lab equipment, assistive devices, printing. Teachers routinely self-fund</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">technology_gap</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Non-functional government tablets; absent Wi-Fi in rural schools; teachers use personal phones and data</td><td style="color:var(--cream);font-weight:600">8/9</td></tr>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">retooling_inadequacy</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">T05 estimates ~20% effective retooling after nearly 10 years; some senior school teachers have received no CBE training</td><td style="color:var(--cream);font-weight:600">6/9</td></tr>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">assessment_pressure</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Persistence of KJSEA high-stakes logic alongside CBE's formative rhetoric; pushes teachers back toward exam drilling</td><td style="color:var(--cream);font-weight:600">8/9</td></tr>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">clustering_contradiction</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Cluster system (C1–C4) reproduces merit-based stratification under new labels, contradicting CBE's anti-ranking stance</td><td style="color:var(--cream);font-weight:600">5/9</td></tr>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">leadership_variability</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Head teacher stance as primary enabler or barrier; T04 contrasts obstructive vs supportive head; T08 names leadership renewal as most needed change</td><td style="color:var(--cream);font-weight:600">6/9</td></tr>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">social_worker_absence</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">No professional social work function in Kenyan public schools; administration absorbs this role informally, creating school-family-community gaps</td><td style="color:var(--cream);font-weight:600">2/9</td></tr>
+        <tr><td style="color:var(--a3);font-family:'IBM Plex Mono',monospace;font-size:10px">teacher_wellbeing</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Mental health impacts of workload, paperwork, emotional labour; T01 describes dedicated TPD stress management session</td><td style="color:var(--cream);font-weight:600">3/9</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- T4 -->
+  <div class="card" style="border-left:3px solid var(--a2)">
+    <h3 style="color:var(--a2)">Theme 4: Lateral Collaboration as Lifeline</h3>
+    <div class="dv"></div>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Code</th><th>Level</th><th>Definition</th><th>Freq.</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--a2);font-family:'IBM Plex Mono',monospace;font-size:10px">whatsapp_lateral</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Informal teacher-initiated WhatsApp groups for resource sharing and problem solving; unstructured, limited feedback mechanisms</td><td style="color:var(--cream);font-weight:600">7/9</td></tr>
+        <tr><td style="color:var(--a2);font-family:'IBM Plex Mono',monospace;font-size:10px">subject_panels</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Formal departmental meetings, typically once per term; attendance and follow-through variable</td><td style="color:var(--cream);font-weight:600">7/9</td></tr>
+        <tr><td style="color:var(--a2);font-family:'IBM Plex Mono',monospace;font-size:10px">co_teaching</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Two teachers simultaneously in classroom; found only in T07 and T09's schools; substantially enables differentiated support</td><td style="color:var(--cream);font-weight:600">3/9</td></tr>
+        <tr><td style="color:var(--a2);font-family:'IBM Plex Mono',monospace;font-size:10px">parental_engagement</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">School-family interaction for learner support; highly variable: supportive in urban schools, resistant or absent in rural/low-income contexts</td><td style="color:var(--cream);font-weight:600">8/9</td></tr>
+        <tr><td style="color:var(--a2);font-family:'IBM Plex Mono',monospace;font-size:10px">sne_as_resource</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">General education teachers consulting SNE specialists for guidance; access highly context-dependent</td><td style="color:var(--cream);font-weight:600">4/9</td></tr>
+        <tr><td style="color:var(--a2);font-family:'IBM Plex Mono',monospace;font-size:10px">cooperation_vs_collaboration</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">What teachers describe is largely informal resource sharing (cooperation), not joint problem-solving with role clarity and reciprocal accountability (collaboration proper)</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- T5 -->
+  <div class="card" style="border-left:3px solid var(--a4)">
+    <h3 style="color:var(--a4)">Theme 5: Teacher Adaptive Agency as Moral Vocation</h3>
+    <div class="dv"></div>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Code</th><th>Level</th><th>Definition</th><th>Freq.</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--a4);font-family:'IBM Plex Mono',monospace;font-size:10px">child_first_philosophy</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Learner-centred motivation overriding institutional constraints and exhaustion; core moral driver of adaptive behaviour</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+        <tr><td style="color:var(--a4);font-family:'IBM Plex Mono',monospace;font-size:10px">personal_financial_investment</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Teachers spending personal funds on materials, printing, data bundles; T04 bought hammer and saw for carpentry lesson</td><td style="color:var(--cream);font-weight:600">8/9</td></tr>
+        <tr><td style="color:var(--a4);font-family:'IBM Plex Mono',monospace;font-size:10px">vocation_heart</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">"Ni moyo" (it is the heart) — teaching as moral/spiritual calling; strongest in T04 (SNE) but present across all 9</td><td style="color:var(--cream);font-weight:600">7/9</td></tr>
+        <tr><td style="color:var(--a4);font-family:'IBM Plex Mono',monospace;font-size:10px">unpaid_extra_time</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Arriving early (T01: 6:30am Saturdays), staying late, lunch-time tutorials — all without compensation</td><td style="color:var(--cream);font-weight:600">8/9</td></tr>
+        <tr><td style="color:var(--a4);font-family:'IBM Plex Mono',monospace;font-size:10px">resilience_under_constraint</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Active improvisation in face of structural absence; T08: downloading videos from cyber café; T04: building chicken coop from broken desks</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- T6 -->
+  <div class="card" style="border-left:3px solid var(--a5)">
+    <h3 style="color:var(--a5)">Theme 6: Neurodivergence — Between Recognition, Resourcelessness, and the Strength-Turn</h3>
+    <div class="dv"></div>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Code</th><th>Level</th><th>Definition</th><th>Freq.</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--a5);font-family:'IBM Plex Mono',monospace;font-size:10px">identification_no_diagnosis</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Teachers recognise and name neurodivergent profiles (autism, dyslexia, dyscalculia) without formal diagnostic support; sustained observation only</td><td style="color:var(--cream);font-weight:600">7/9</td></tr>
+        <tr><td style="color:var(--a5);font-family:'IBM Plex Mono',monospace;font-size:10px">strength_based_framing</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Spontaneous teacher attention to learner strengths (art, music, sport, oral fluency) as adaptive strategy; prefigures neurodiversity paradigm</td><td style="color:var(--cream);font-weight:600">6/9</td></tr>
+        <tr><td style="color:var(--a5);font-family:'IBM Plex Mono',monospace;font-size:10px">parent_denial</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Parental refusal to accept SEN identification; stigma, misinformation, preference for mainstream placement</td><td style="color:var(--cream);font-weight:600">5/9</td></tr>
+        <tr><td style="color:var(--a5);font-family:'IBM Plex Mono',monospace;font-size:10px">medical_model_referral</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Formal referral chain: teacher → head → parent → hospital → CSO → placement; slow, bureaucratic, rarely completed</td><td style="color:var(--cream);font-weight:600">3/9</td></tr>
+        <tr><td style="color:var(--a5);font-family:'IBM Plex Mono',monospace;font-size:10px">labelling_effects</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">How labels ("noisemaker," "slow") follow learners between classes and schools, shaping teacher expectations and peer relations</td><td style="color:var(--cream);font-weight:600">4/9</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+
+  <!-- T7 -->
+  <div class="card" style="border-left:3px solid var(--a6)">
+    <h3 style="color:var(--a6)">Theme 7: The CBE Paradox — Aspirational Design, Enacted Contradiction</h3>
+    <div class="dv"></div>
+    <div class="tw"><table class="t">
+      <thead><tr><th>Code</th><th>Level</th><th>Definition</th><th>Freq.</th></tr></thead>
+      <tbody>
+        <tr><td style="color:var(--a6);font-family:'IBM Plex Mono',monospace;font-size:10px">aspirational_vs_enacted</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Gap between CBE's published inclusive aspirations and classroom-level reality; present in all 9 interviews</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+        <tr><td style="color:var(--a6);font-family:'IBM Plex Mono',monospace;font-size:10px">hybrid_system</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">T01's own term — CBE contains substantial 8-4-4 logic (exam pressure, content overload, merit placement) inside its learner-centred rhetoric</td><td style="color:var(--cream);font-weight:600">7/9</td></tr>
+        <tr><td style="color:var(--a6);font-family:'IBM Plex Mono',monospace;font-size:10px">pathway_promise_vs_reality</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Talent pathway system endorsed in principle but non-functional in rural contexts; T08: Monanda sports pathway school has no field, 13 learners</td><td style="color:var(--cream);font-weight:600">4/9</td></tr>
+        <tr><td style="color:var(--a6);font-family:'IBM Plex Mono',monospace;font-size:10px">parental_8_4_4_mindset</td><td><span class="code-tag">Semantic</span></td><td style="color:var(--text-dim);font-size:var(--fss)">Parents' residual examination-oriented expectations conflict with CBE's project-based demands; friction around grading, school choice, materials</td><td style="color:var(--cream);font-weight:600">6/9</td></tr>
+        <tr><td style="color:var(--a6);font-family:'IBM Plex Mono',monospace;font-size:10px">CBE_goodwill_despite_constraints</td><td><span class="code-tag">Latent</span></td><td style="color:var(--text-dim);font-size:var(--fss)">All 9 teachers express genuine belief in CBE's potential despite enumerated failures — double-consciousness of critique and commitment</td><td style="color:var(--cream);font-weight:600">9/9</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ANALYTIC MEMOS ═══════════════ -->
+<div id="p-memos" class="panel">
+  <h2 class="pt">Analytic Memos</h2>
+  <p class="ps">Five session memos documenting key interpretive decisions, analytic surprises, and rationale for coding choices. These constitute the reflexive journalling component of the audit trail.</p>
+
+  <div class="am">
+    <div class="am-date">Memo 1 — First Read-Through · All 9 transcripts</div>
+    <div class="am-text">Initial familiarisation with the full corpus. Struck immediately by the consistency of the <strong>personal cost</strong> narrative across very different teachers — T01 (urban, senior school) and T08 (rural, marginal community) share the same willingness to absorb financial and temporal costs without institutional recognition. This feels latent — not something teachers explicitly flag as remarkable, but something that saturates the data. Note: the 6:30am/Saturday detail from T01 needs a latent code, not just a semantic one. The semantic code would be "unpaid extra time" but the latent dimension is something about moral vocation that precedes and exceeds the specific behaviour. Will flag this in v2. <br><br>Also: T03's account of the boy who cannot copy from the board is analytically rich. Three years of sustained, unresolved effort. The absence of diagnostic support is made visible not through complaint but through the flatness of the description — "I don't know what to do." This is a teacher who has reached the edge of their adaptive capacity without any institutional response. Strong candidate for a quote in Ch4 under both Theme 5 (moral vocation) and Theme 6 (identification without diagnosis).</div>
+  </div>
+
+  <div class="am">
+    <div class="am-date">Memo 2 — First Coding Pass · Semantic Level</div>
+    <div class="am-text">Semantic coding generated 47 initial codes (Codebook v1). The challenge at this stage is the "adaptation" codes — there are too many that are conceptually close but practically distinct. "Flashcards," "wall charts," "projector," and "pictures from internet" are all doing similar analytic work (making content visible) but arise from very different resourcing contexts. Decided to group these as <strong>visual_multimodal</strong> in v2, while retaining the distinction in the coding spreadsheet extract notes because the resourcing dimension is analytically important for Theme 3.<br><br>T04's data stands apart from the rest: the IEP, the modelling clay, the gadgets from KISE, the chicken coop. The SNE context produces a qualitatively different kind of adaptation. Need to be careful not to let T04 pull Theme 1 too far toward specialist practice — the coding should reflect what is being compared against mainstream contexts.</div>
+  </div>
+
+  <div class="am">
+    <div class="am-date">Memo 3 — Latent Coding · Values Dimension</div>
+    <div class="am-text">Moved to latent coding pass after semantic coding was complete. Three latent codes emerged that were not visible at the semantic level: <strong>cooperation_vs_collaboration</strong> (Theme 4), <strong>CBE_goodwill_despite_constraints</strong> (Theme 7), and <strong>vocation_heart</strong> (Theme 5). The first two required drawing on the literature — the Harris (2013) distinction between cooperation and collaboration is not something any participant uses explicitly, but it maps precisely onto what they describe. The "goodwill despite critique" code captures something T02 says directly ("I support it 100%") and T05 implies ("the government is not ready but the curriculum itself is good"). This double-consciousness of systemic critique and personal commitment is a latent pattern that no individual participant articulates but that emerges structurally across accounts.<br><br>Concern: am I importing too much from Harris (2013) at the expense of participants' own categories? Counter-check: ran back through T04, T07, T08 data — none describe what they do as "collaboration" in the proper sense. T07 is closest (co-teacher model) but explicitly notes role ambiguity. The latent code holds.</div>
+  </div>
+
+  <div class="am">
+    <div class="am-date">Memo 4 — Theme Construction · Consolidation</div>
+    <div class="am-text">Theme construction from 22 focused codes (v2) to 7 themes. The most difficult decision was whether Theme 5 (Moral Vocation) should be a standalone theme or absorbed into Theme 1 (Adaptation Ensembles) as its motivational substrate. Argument for absorption: moral vocation is what produces adaptation ensembles. Argument against: it is analytically distinct — it explains the sustainability of adaptive behaviour, not the form it takes, and it speaks directly to RQ1's "pedagogical reasoning" component. Decision: keep separate. The tension between the two themes is itself analytically productive for Ch4.<br><br>Theme 6 (Neurodivergence Recognition) was at risk of being a thin theme — only 5 codes. But the strength-based framing code is carrying heavy latent-level analytical work (the spontaneous turn toward neurodiversity paradigm without any training in it) and the parent denial code is essential for understanding why formal support pathways break down. Retained as standalone with a note that it is the "condition" that motivates the adaptations documented in Theme 1.</div>
+  </div>
+
+  <div class="am">
+    <div class="am-date">Memo 5 — Counter-Example Check · Disconfirming Cases</div>
+    <div class="am-text">Systematic check for counter-examples and disconfirming cases before finalising themes. Key disconfirming cases noted:<br><br><strong>Against Theme 4 (Collaboration):</strong> T05 explicitly states that schemes of work are done for inspection compliance, not genuine planning ("If nobody's coming to check them, we don't do that"). This directly disconfirms any claim that formal collaboration structures are functioning as intended. Incorporated into the cooperation/collaboration latent code as the sharpest available counter-evidence.<br><br><strong>Against Theme 2 (Inclusive Utility — Presence):</strong> T05 is the only participant to report actual dropout (~2%). All other teachers report near-100% attendance. This makes T05 a crucial analytic outlier — not evidence against Theme 2 but evidence that the presence P is contextually variable in ways urban school data alone would obscure. T05's account strengthens rather than weakens the theme by showing that presence is not guaranteed and has identifiable causes when it fails.<br><br><strong>Against Theme 7 (CBE goodwill):</strong> T08 is the most sceptical of CBE rhetoric — "serious disconnect is there." But even T08 does not reject the principle; he rejects the implementation. The double-consciousness pattern holds. No genuine counter-evidence to Theme 7 found.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ CODING SPREADSHEET ═══════════════ -->
+<div id="p-coding" class="panel">
+  <h2 class="pt">Coding Spreadsheet — Analytic Working Document</h2>
+  <p class="ps">Curated extracts from all 9 interviews — 2–3 per code — with codes, themes, and memo notes. This is the primary audit trail evidence. Filter by participant or theme.</p>
+
+  <div class="fb">
+    <select class="fi" id="fp" onchange="filterCS()">
+      <option value="">All Participants</option>
+      <option>T01</option><option>T02</option><option>T03</option>
+      <option>T04</option><option>T05</option><option>T06</option>
+      <option>T07</option><option>T08</option><option>T09</option>
+    </select>
+    <select class="fi" id="fth" onchange="filterCS()">
+      <option value="">All Themes</option>
+      <option value="T1">T1 — Adaptation Ensembles</option>
+      <option value="T2">T2 — Inclusive Utility</option>
+      <option value="T3">T3 — Structural Tensions</option>
+      <option value="T4">T4 — Collaboration</option>
+      <option value="T5">T5 — Moral Vocation</option>
+      <option value="T6">T6 — Neurodivergence</option>
+      <option value="T7">T7 — CBE Paradox</option>
+    </select>
+    <select class="fi" id="flv" onchange="filterCS()">
+      <option value="">All Levels</option>
+      <option value="Semantic">Semantic</option>
+      <option value="Latent">Latent</option>
+    </select>
+  </div>
+  <div id="cs-count" class="sr"></div>
+  <div class="tw" id="cs-wrap">
+    <table class="t" id="cs-table">
+      <thead>
+        <tr>
+          <th style="min-width:50px">PID</th>
+          <th style="min-width:220px">Extract</th>
+          <th style="min-width:120px">Code(s)</th>
+          <th style="min-width:80px">Theme</th>
+          <th style="min-width:60px">Level</th>
+          <th style="min-width:160px">Analytic Memo Note</th>
+        </tr>
+      </thead>
+      <tbody id="cs-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════ MEMBER CHECKING ═══════════════ -->
+<div id="p-mc" class="panel">
+  <h2 class="pt">Member-Checking Theme Summaries</h2>
+  <p class="ps">Plain-language summaries of all 7 themes, ready to send to T03, T04, and T09 via WhatsApp. Written without jargon, in accessible language. Attach the questions below each summary when sending.</p>
+
+  <div class="card" style="margin-bottom:18px">
+    <h3>Sending Instructions</h3>
+    <div class="dv"></div>
+    <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px"><strong style="color:var(--cream)">Who to send to:</strong> T03, T04, T09 (richest accounts; most analytically distinct contexts)</p>
+    <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px"><strong style="color:var(--cream)">Format:</strong> Send a WhatsApp voice note explaining what you are sending, followed by this document as a PDF or as a typed WhatsApp message (one theme at a time)</p>
+    <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65;margin-bottom:8px"><strong style="color:var(--cream)">Timeline:</strong> Give 2 weeks; document whoever responds and what they say</p>
+    <p style="font-size:var(--fss);color:var(--text-dim);line-height:1.65"><strong style="color:var(--cream)">What to say:</strong> "Nilikuwa nataka kukushirikisha muhtasari wa mambo niliyogundua kutoka mazungumzo yetu. Ningependa kujua kama hii inaakisi vizuri ulichonieleza." (Or in English: "I wanted to share a short summary of what I found from our conversation. I'd love to know if this feels accurate to what you shared with me.")</p>
+  </div>
+
+  <div class="mc-card">
+    <div class="mc-head">
+      <div class="mc-num" style="background:rgba(212,168,67,.18);color:var(--gold);border:2px solid rgba(212,168,67,.4)">1</div>
+      <div>
+        <div class="mc-title">Teachers put together small bundles of changes, not single big ones</div>
+        <div class="mc-lens">Theme 1 — Adaptation Ensembles</div>
+      </div>
+    </div>
+    <div class="mc-body">What came through very clearly in our conversations is that when a lesson is not working for a learner, teachers do not just make one change — they make several small adjustments at the same time. Maybe they move the child closer to their desk, switch briefly to Kiswahili, break the task into smaller steps, and pair the child with a helpful classmate — all in the same lesson. These bundles of small changes are things teachers work out from experience and observation, not things they are taught specifically. They are also low-cost: they do not require special equipment or extra budget. What drives the choice of which bundle to use seems to be a combination of what the teacher knows about the learner, what is practical in the moment, and what the classroom conditions allow.</div>
+    <div class="mc-q">
+      <p>Questions for your reflection:</p>
+      <ul>
+        <li>Does this match what you described in our conversation?</li>
+        <li>Is there anything about how you make these decisions that you feel is missing or not quite right?</li>
+        <li>Is there anything you would like to add or change?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc-card" style="border-left-color:var(--a1)">
+    <div class="mc-head">
+      <div class="mc-num" style="background:rgba(78,143,202,.18);color:var(--a1);border:2px solid rgba(78,143,202,.4)">2</div>
+      <div>
+        <div class="mc-title">Teachers judge success through small signs, not just test scores</div>
+        <div class="mc-lens">Theme 2 — Inclusive Utility (3P)</div>
+      </div>
+    </div>
+    <div class="mc-body">When I asked teachers how they know whether what they are doing is working, almost no one mentioned exam results first. Instead, they talked about smaller, more immediate signs: a child who was absent a lot suddenly starts coming every day; a child who never put up their hand starts trying to answer; a child who could not copy a single word from the board manages two or three. These small milestones feel just as significant — sometimes more significant — than a grade. Teachers also talked about belonging: whether the child seems comfortable in the room, whether classmates accept them, and whether they feel like they are part of what is happening in the lesson. For learners in special needs settings especially, the definition of "progress" stretched well beyond curriculum content.</div>
+    <div class="mc-q">
+      <p>Questions for your reflection:</p>
+      <ul>
+        <li>Does this capture how you personally judge whether your efforts are working?</li>
+        <li>Are there other signs of progress you look for that are not mentioned here?</li>
+        <li>Is there anything that feels inaccurate?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc-card" style="border-left-color:var(--a3)">
+    <div class="mc-head">
+      <div class="mc-num" style="background:rgba(74,171,138,.18);color:var(--a3);border:2px solid rgba(74,171,138,.4)">3</div>
+      <div>
+        <div class="mc-title">The system makes it very hard — and it was designed for a different kind of school</div>
+        <div class="mc-lens">Theme 3 — Structural-Ecological Tensions</div>
+      </div>
+    </div>
+    <div class="mc-body">Teachers across all school contexts described significant structural barriers that limit what they can do for learners who need more support. Class sizes regularly exceed 60 or 70. Government-issued tablets are broken or outdated. Many schools have no Wi-Fi, and teachers use their own phones and pay for their own data to access learning materials online. The CBE was modelled partly on systems like Finland's, where there are specialist support teachers alongside every class teacher, class sizes of 18–21, and fully equipped schools. None of those conditions exist in most Kenyan public schools. Teachers described carrying these gaps largely alone, improvising with whatever they could find or buy. The pressure of the KJSEA examination also continues to push many teachers back toward exam-focused teaching, even as the curriculum officially promotes competency-based learning.</div>
+    <div class="mc-q">
+      <p>Questions for your reflection:</p>
+      <ul>
+        <li>Do these barriers match what you experience in your school?</li>
+        <li>Are there any important barriers missing from this summary?</li>
+        <li>Is there anything here you would describe differently?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc-card" style="border-left-color:var(--a2)">
+    <div class="mc-head">
+      <div class="mc-num" style="background:rgba(107,91,171,.18);color:var(--a2);border:2px solid rgba(107,91,171,.4)">4</div>
+      <div>
+        <div class="mc-title">Teachers rely on each other informally — WhatsApp more than meetings</div>
+        <div class="mc-lens">Theme 4 — Lateral Collaboration</div>
+      </div>
+    </div>
+    <div class="mc-body">When teachers need support — whether to understand a learner better, find a resource, or figure out how to explain a concept — they usually turn to a trusted colleague, not a formal structure. WhatsApp groups among teachers are the most commonly mentioned platform: teachers share resources, ask questions, and sometimes solve problems together through these groups. Subject panel meetings also happen, but they tend to be irregular and often do not result in changes to classroom practice. Where two teachers share a classroom (as in a couple of the schools in this study), the arrangement makes a big difference — having a second person in the room who can support individual learners while the lesson continues changes what is possible. Parental involvement varies greatly: supportive in some urban contexts, resistant or absent in many rural ones.</div>
+    <div class="mc-q">
+      <p>Questions for your reflection:</p>
+      <ul>
+        <li>Does this reflect the collaboration that actually happens in your school?</li>
+        <li>Is there a form of support or teamwork that is missing from this picture?</li>
+        <li>Anything you would change or add?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc-card" style="border-left-color:var(--a4)">
+    <div class="mc-head">
+      <div class="mc-num" style="background:rgba(196,91,91,.18);color:var(--a4);border:2px solid rgba(196,91,91,.4)">5</div>
+      <div>
+        <div class="mc-title">Teachers do all of this because they care deeply — and it costs them personally</div>
+        <div class="mc-lens">Theme 5 — Teacher Adaptive Agency as Moral Vocation</div>
+      </div>
+    </div>
+    <div class="mc-body">One of the most striking things across all nine conversations was how much teachers invest beyond what is expected or compensated. Teachers arrive before 6:30am, come in on Saturdays without pay, give up lunch breaks for individual sessions with struggling learners, and spend their own money on materials, printed worksheets, and mobile data for accessing teaching resources. When I asked why, nobody gave a professional obligation — they talked about caring for the child, about not being able to sleep knowing a learner has not understood, about teaching being something that comes from the heart. This deep personal investment is what keeps inclusive practice alive in conditions that could otherwise justify giving up. But it also means the system relies heavily on individual teachers' goodwill in ways that are not sustainable and that mask the need for structural support.</div>
+    <div class="mc-q">
+      <p>Questions for your reflection:</p>
+      <ul>
+        <li>Does this feel true to what you described about why you teach the way you do?</li>
+        <li>Is there anything about the personal cost that you feel is overstated or understated?</li>
+        <li>Is there anything you would like to add?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc-card" style="border-left-color:var(--a5)">
+    <div class="mc-head">
+      <div class="mc-num" style="background:rgba(212,120,67,.18);color:var(--a5);border:2px solid rgba(212,120,67,.4)">6</div>
+      <div>
+        <div class="mc-title">Teachers see learner differences clearly — but get almost no professional support to respond to them</div>
+        <div class="mc-lens">Theme 6 — Neurodivergence Recognition</div>
+      </div>
+    </div>
+    <div class="mc-body">Every teacher in this study described learners with significant differences in how they learn — difficulties with reading, writing, copying from the board, following verbal instructions, or engaging socially in the classroom. Some teachers named these directly: autism, dyslexia, dyscalculia. Others described the behaviours in detail without using clinical labels. In almost every case, there was no formal diagnosis, no specialist support, and no referral pathway that actually moved quickly enough to help. Teachers figured out what they could by themselves: moving the child closer, translating into Kiswahili, giving them a different kind of task. Several teachers also noticed what learners were good at — drawing, carpentry, music, sports — and used these strengths as entry points into the lesson. This instinct to start from strength rather than deficit is exactly what research on neurodiversity says schools should do, even though none of the teachers had training in that framework.</div>
+    <div class="mc-q">
+      <p>Questions for your reflection:</p>
+      <ul>
+        <li>Does this match your experience of identifying and responding to learners who learn differently?</li>
+        <li>Is the referral process described here accurate to what you have experienced?</li>
+        <li>Is there anything important missing?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mc-card" style="border-left-color:var(--a6)">
+    <div class="mc-head">
+      <div class="mc-num" style="background:rgba(107,171,107,.18);color:var(--a6);border:2px solid rgba(107,171,107,.4)">7</div>
+      <div>
+        <div class="mc-title">The CBE is a good idea that has not yet become a reality for most learners</div>
+        <div class="mc-lens">Theme 7 — The CBE Paradox</div>
+      </div>
+    </div>
+    <div class="mc-body">Without exception, every teacher in this study expressed genuine support for what the CBE is trying to do — move away from rote learning and toward competency, allow learners to be recognised for different kinds of ability, and create pathways based on strength rather than a single exam result. And without exception, every teacher also described a significant gap between that vision and what is actually happening in schools. The KJSEA examination still determines transition, so teachers still teach for the exam. The cluster school system still ranks schools, so parents still push for the "top" schools. The pathway system that was supposed to channel learners to schools matching their talents often leads to schools that lack the very facilities needed for those pathways. Teachers described living in a "hybrid system" — officially CBE, but structurally still shaped by the logic of the 8-4-4 it was meant to replace.</div>
+    <div class="mc-q">
+      <p>Questions for your reflection:</p>
+      <ul>
+        <li>Does this capture the tensions you experience between what the CBE promises and what you can deliver in your classroom?</li>
+        <li>Is there anything about the system that feels misrepresented or missing?</li>
+        <li>Is there anything you would like to change?</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+// ── SIDEBAR ────────────────────────────────────────────────────────────────
+let slimmed = false;
+function toggleSlim(){
+  const sb = document.getElementById('sb');
+  const btn = document.getElementById('sb-tog');
+  slimmed = !slimmed;
+  sb.classList.toggle('slim', slimmed);
+  if(btn){ btn.textContent = slimmed ? '▶' : '◀'; }
+}
+function openMob(){
+  document.getElementById('sb').classList.add('mo');
+  document.getElementById('ov').style.display = 'block';
+}
+function closeMob(){
+  document.getElementById('sb').classList.remove('mo');
+  document.getElementById('ov').style.display = 'none';
+}
+
+// ── PANEL NAV ──────────────────────────────────────────────────────────────
+const panelMap = {
+  'overview':'p-overview','v1':'p-v1','v2':'p-v2',
+  'vf':'p-vf','memos':'p-memos','coding':'p-coding','mc':'p-mc'
+};
+function show(id, el){
+  Object.values(panelMap).forEach(p => { const el = document.getElementById(p); if(el) el.classList.remove('on'); });
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const panel = document.getElementById(panelMap[id]);
+  if(panel) panel.classList.add('on');
+  el.classList.add('active');
+  if(id === 'coding') renderCS();
+  if(window.innerWidth <= 700) closeMob();
+}
+
+// ── CODING SPREADSHEET DATA ────────────────────────────────────────────────
+const csData = [
+  // THEME 1 — ADAPTATION ENSEMBLES
+  {pid:'T01',theme:'T1',code:'heterogeneous_grouping',level:'Semantic',extract:'The grouping is heterogeneous. They sit in mixed ability. Actually, we vary the seating according to the results. Competition is really discouraged in the system; it\'s more of collaboration.',memo:'Key instance of deliberate design against streaming; connects to CBE collaboration competency'},
+  {pid:'T07',theme:'T1',code:'heterogeneous_grouping',level:'Semantic',extract:'When I\'m teaching, probably I\'ve given an activity that is supposed to be done by every learner. The co-teacher will make sure that the learner who is differently abled will get into the group, maybe by guiding him or her how to participate.',memo:'Heterogeneous grouping enabled by co-teaching model; strongest structural enabler of this code'},
+  {pid:'T03',theme:'T1',code:'translanguaging',level:'Semantic',extract:'Like let\'s say I put a question in English, and then I explain the same question in Kiswahili, you will see his hand up, and he answers correctly.',memo:'Translanguaging as both pedagogical bridge and assessment insight — reveals cognition hidden by language barrier; covert practice'},
+  {pid:'T02',theme:'T1',code:'translanguaging',level:'Semantic',extract:'You are forced to teach a mathematics lesson in Kiswahili at times, an English lesson in Kiswahili at times. That\'s the first greatest barrier, so you have to reduce your content to a learner to a micro level.',memo:'Language as structural barrier surfaced here; translanguaging framed as necessity not choice in rural catchment'},
+  {pid:'T02',theme:'T1',code:'visual_multimodal',level:'Semantic',extract:'I carry projectors almost as many times as I can to tap into those learners who are visual. Our learner is very visual, likes seeing a lot, or touching a lot, so that lesson becomes more interesting to them.',memo:'Teacher self-funding projector use; implicit UDL — multiple means of representation without naming framework'},
+  {pid:'T05',theme:'T1',code:'visual_multimodal',level:'Semantic',extract:'I was teaching integrated science and you can\'t do it practically. So you have to use kind of ICT materials just for them to get the concept — go and Google some pictures which can give them a clear way of what they\'re learning.',memo:'Technology as compensatory tool for absent lab resources; teacher using personal data'},
+  {pid:'T06',theme:'T1',code:'seating_proximity',level:'Semantic',extract:'I always took them close to me. They sit just close to me, in front, because of other teachers — you introduce the teacher to those pupils so she\'s aware that we have learners with those learning difficulties.',memo:'Seating serves dual function: direct monitoring AND teacher handover briefing — shows systemic awareness'},
+  {pid:'T09',theme:'T1',code:'seating_proximity',level:'Semantic',extract:'You make sure that learner is sitting next to you or near you so that you can monitor. You can also even have a learner who is much supportive — you partner him with a learner.',memo:'Proximity bundled immediately with peer pairing — adaptation ensemble logic visible in single sentence'},
+  {pid:'T03',theme:'T1',code:'scaffolding_ido_wedo_youdo',level:'Semantic',extract:'There is another principle that we use here in school: I do, we do, then you do. Yeah, it works.',memo:'Spontaneous naming of established pedagogical framework — not from training but from practice; strong quote for Ch4'},
+  {pid:'T04',theme:'T1',code:'practical_handson',level:'Semantic',extract:'One time last year, we made a chicken coop with the learner. I bought a hammer, a saw, msumeno, tukatafuta misumari, mbao from broken desks. And we also have another one who wants to be a chef — when we are cooking, the learner is there learning.',memo:'Most vivid instance of practical adaptation; personal financial investment + strength-based design + vocational CBE alignment combined'},
+  {pid:'T07',theme:'T1',code:'task_chunking',level:'Semantic',extract:'When others are doing such things that they are understanding... we draw big items and then we tell him to choose which holds more or which holds less. We try to give them what is to their level.',memo:'Chunking plus simplification within same lesson as peers; participation maintained through differentiated but parallel task'},
+  {pid:'T09',theme:'T1',code:'oral_alternatives',level:'Semantic',extract:'Instead of him writing because he might take the whole day — he can answer orally. If it\'s something to do with drawing, writing, we can do drawing and reading. I can also make some matching.',memo:'Three alternatives offered in same breath — ensemble logic; accommodation without extraction from mainstream activity'},
+
+  // THEME 2 — INCLUSIVE UTILITY
+  {pid:'T06',theme:'T2',code:'3P_presence',level:'Semantic',extract:'This learner is always in school. In fact, the parents do tell me, "Anakataa nikimwambia leo hakuna shule, anakataa." I think it is because of the teacher.',memo:'Presence driven by relational belonging to teacher — strongest available evidence of affective dimension of presence P'},
+  {pid:'T08',theme:'T2',code:'3P_presence',level:'Semantic',extract:'Attendance changes. In January we have very few pupils. When we approach the planting season, they often come back to school to escape the farm labour.',memo:'Seasonal presence driven by economic logic not learning motivation; systemic rural poverty underlying the first P'},
+  {pid:'T05',theme:'T2',code:'dropout_disengagement',level:'Semantic',extract:'Some of the curriculum was so heavy for them to comprehend. There is quite a number, around 2%, who dropped. They felt like they couldn\'t manage, so they said no, they are not going to do it.',memo:'Only participant to quantify dropout; curriculum content weight as direct cause — connects Theme 2 to Theme 7 (CBE paradox)'},
+  {pid:'T06',theme:'T2',code:'3P_participation',level:'Semantic',extract:'They will not get the concept, but they will love the lesson. You will find that in class, they are very attentive. Then they like you. They are willing — ni vile hawashiki.',memo:'Participation decoupled from comprehension — important nuance for inclusive utility framework; belonging enables participation before content acquisition'},
+  {pid:'T04',theme:'T2',code:'celebrating_small_wins',level:'Latent',extract:'aki-count afike three, that\'s a step. Then from there, you just continue polepole tu. It is encouraged because there are other parameters that we check on.',memo:'SNE context produces most explicit redefinition of progression — counting to 3 as achievement reframes normative curriculum benchmark; latent reframing of success'},
+  {pid:'T07',theme:'T2',code:'celebrating_small_wins',level:'Latent',extract:'When she was in Grade 1, she could not communicate right, but right now you can hear her calling teacher. She can come tell you in Kiswahili, "Huyu anapiga." She is actually telling herself to wipe her nose.',memo:'Longitudinal progression tracked through communication development — vocabulary as progression indicator; deeply personal observation'},
+  {pid:'T09',theme:'T2',code:'belonging',level:'Latent',extract:'When they are accepted by others, they try. But if they feel that they are neglected, they withdraw. So even if they know the answer, they\'ll not answer because they feel as if whatever I\'m going to say is not correct.',memo:'Belonging explicitly theorised by T09 as precondition for participation — latent logic matches Florian (2014) without naming it'},
+
+  // THEME 3 — STRUCTURAL TENSIONS
+  {pid:'T01',theme:'T3',code:'assessment_pressure',level:'Latent',extract:'It\'s a hybrid. It\'s a hybrid of what is the intended and what is actual. KJSEA preparation will require a lot of time to review what was covered in Grade 7, 8, and 9. You will feel that the problem is not more from the learners but the workload to be covered.',memo:'T01 coins "hybrid" — insider conceptual language with strong analytic purchase; blame shifted from learner to system design'},
+  {pid:'T05',theme:'T3',code:'retooling_inadequacy',level:'Semantic',extract:'A student who reported in Grade 1 is now Grade 10. That tells you we are almost 10 years. And we are still retooling. We have got some teachers who have not attended the training. So what does that tell you? It tells me that the teacher is still teaching 8-4-4 in CBE.',memo:'Sharpest articulation of retooling failure; ten-year timeline makes the inadequacy undeniable; structural rather than individual explanation'},
+  {pid:'T03',theme:'T3',code:'technology_gap',level:'Semantic',extract:'We don\'t have Wi-Fi in our school. So if we need something to do with technology, I have to use my phone. We only have one classroom which is connected to electricity.',memo:'Infrastructure deprivation stacked (no Wi-Fi + one electrified room) — gap from Nordic model most visible in rural contexts'},
+  {pid:'T04',theme:'T3',code:'leadership_variability',level:'Semantic',extract:'The biggest problem comes from the head of institutions who are not ready to assist with these learners. But now I have a new head of institution who is very cooperative. Now we are very much okay with our learners.',memo:'Single leadership change produces dramatic resource change — head teacher as system-level enabler/barrier; strongest evidence for this code'},
+  {pid:'T08',theme:'T3',code:'clustering_contradiction',level:'Latent',extract:'These pathways, it is not working because most of the schools do not have facilities. Monanda had taken the sports pathway; it does not have a field, no teachers. The school has 13 learners.',memo:'Pathway rhetoric exposed as hollow in T08\'s context; policy aspiration unmoored from material conditions — strongest counter-evidence to CBE\'s inclusion claims'},
+
+  // THEME 4 — COLLABORATION
+  {pid:'T01',theme:'T4',code:'whatsapp_lateral',level:'Semantic',extract:'We have a WhatsApp for the staff. We have a WhatsApp for every class where we have all parents on board. Personally, I also have Google Classroom for my learners, where I\'m able to share the curriculum design.',memo:'Most technologically sophisticated collaboration described — urban, experienced teacher; outlier from typical WhatsApp-only pattern'},
+  {pid:'T02',theme:'T4',code:'whatsapp_lateral',level:'Semantic',extract:'In our sub-county, we have a junior school WhatsApp group where we currently undertake joint examinations and joint collaborative activities. We share the resources that are available across those groups.',memo:'Cross-school WhatsApp collaboration — geographic reach beyond single school; resource sharing without structured feedback (cooperation, not collaboration proper)'},
+  {pid:'T07',theme:'T4',code:'co_teaching',level:'Semantic',extract:'We always have another teacher in the room. The co-teacher will make sure that the learner who is differently abled will get into the group, maybe by guiding him or her how to participate.',memo:'Co-teaching as structural enabler — only 2 schools in sample have this; dramatically expands adaptation feasibility frontier'},
+  {pid:'T05',theme:'T4',code:'cooperation_vs_collaboration',level:'Latent',extract:'Schemes of work are just done because we are being followed. Actually, to be honest, we do them when we feel like there is pressure or there\'s a need. If nobody\'s coming to check them, we don\'t do that.',memo:'Explicit compliance-not-collaboration confession; formal structures performed for inspection, not used for genuine planning — latent gap between cooperation and collaboration'},
+  {pid:'T09',theme:'T4',code:'co_teaching',level:'Semantic',extract:'My co-teacher is an SNE teacher. It was just a coincidence that she\'s an SNE. The support of the administration is 100% good.',memo:'Incidental SNE co-teaching pairing producing optimal support arrangement; "coincidence" framing shows absence of system design behind it'},
+
+  // THEME 5 — MORAL VOCATION
+  {pid:'T01',theme:'T5',code:'unpaid_extra_time',level:'Semantic',extract:'I will still use it. My learners always come first. You\'ll find me in the class at 6:30 in the morning. I\'ll come to school every Saturday at 7:00 without anyone paying me anything, just to try and reach out to the child.',memo:'22-year veteran; child-first explicitly articulated as the logic behind unpaid labour; not exhaustion but orientation'},
+  {pid:'T04',theme:'T5',code:'vocation_heart',level:'Latent',extract:'When teaching learners with special needs, it comes from your heart. Kama huna roho ya utu, ata kama ume-train on special needs, you cannot teach.',memo:'Explicit "ni moyo" articulation; SNE context produces most direct naming of vocation — training is necessary but insufficient without moral orientation'},
+  {pid:'T08',theme:'T5',code:'resilience_under_constraint',level:'Latent',extract:'It is costly, but now you have to do it. You just do it. You just close your eyes and do it. Because it\'s enhancing your work.',memo:'"Close your eyes and do it" — striking phrase; resilience framed as moral compulsion not professional requirement; latent acceptance of structural inadequacy'},
+  {pid:'T04',theme:'T5',code:'personal_financial_investment',level:'Semantic',extract:'One time last year, we made a chicken coop with the learner. I bought a hammer, a saw. When I was posted to teach a special unit, as a teacher, you are given an allowance of around 10,000. Sometimes you give back to the learner.',memo:'SNE allowance reinvested directly into learner activities — financial gift loop; demonstrates how personal finance and vocation interlock'},
+
+  // THEME 6 — NEURODIVERGENCE
+  {pid:'T02',theme:'T6',code:'identification_no_diagnosis',level:'Semantic',extract:'We have very severe cases of dyslexia and dysgraphia — any situation where learners cannot construct language sentences. On the dyscalculia, confusing multiplication and addition. It\'s very common and very severe in our situations.',memo:'Rural teacher naming clinical categories without clinical support; identification through observation alone; "very severe" suggests long-standing unmet need'},
+  {pid:'T03',theme:'T6',code:'identification_no_diagnosis',level:'Semantic',extract:'This boy cannot be able to pick something from the board — transferring whatever you\'ve written to his book is a challenge. I\'ve been with him for three years now. I\'ve tried my best, but I don\'t know what to do.',memo:'Most poignant account of isolation without specialist support; three-year duration makes the absence of diagnosis/referral most visible; "I don\'t know what to do" = edge of adaptive capacity'},
+  {pid:'T03',theme:'T6',code:'strength_based_framing',level:'Latent',extract:'Even shaping letters, he used to shape them very well. He also liked drawing and colouring. He could memorise some words and name the pictures. He can make copies of a whole chart, well drawn and coloured.',memo:'Spontaneous strength-based observation about non-verbal autistic learner; no training in neurodiversity paradigm yet arriving at its core claim; strong latent-level evidence'},
+  {pid:'T04',theme:'T6',code:'parent_denial',level:'Semantic',extract:'Some parents, they don\'t accept that my child has special needs. When I tried to talk with the headteacher, he said, "Wewe wachana na hawa watoto, wakae." Most of the headteachers ni wale wa kitambo — they don\'t understand the need.',memo:'Double barrier: parent denial + leadership dismissal; systemic reproduction of medical model through institutional non-response'},
+  {pid:'T01',theme:'T6',code:'labelling_effects',level:'Latent',extract:'Labels also constitute part of the diversity. We are not all the same, and some kids are going to be noisemakers, and others are going to be people with a shorter attention span. Once a label sticks long enough, you almost want to change because you move from one class to the next being labelled as this child, the difficult child.',memo:'Researcher drawing out T01\'s awareness of labelling harm; T01\'s response shows sophisticated implicit understanding of stigma without clinical vocabulary'},
+
+  // THEME 7 — CBE PARADOX
+  {pid:'T01',theme:'T7',code:'hybrid_system',level:'Semantic',extract:'It\'s a hybrid. It\'s a hybrid of what is the intended and what is actual. Once you now have Grade 9 as the candidate class, KJSEA preparation will require a lot of time to review Grade 7, 8, and 9 work.',memo:'"Hybrid" is T01\'s own conceptual invention — insider language with precision; not a criticism of CBE but an accurate phenomenological description of how it is enacted'},
+  {pid:'T05',theme:'T7',code:'aspirational_vs_enacted',level:'Latent',extract:'To be honest, we were teaching the learners to pass the exam. And since we have been doing it for a while, we are still doing it. And that\'s why it\'s going to affect us with the new curriculum, whereby we are not supposed to do that.',memo:'Confession of pedagogical inertia; the past system has colonised the new one; "we are not supposed to" shows awareness of the contradiction'},
+  {pid:'T02',theme:'T7',code:'CBE_goodwill_despite_constraints',level:'Latent',extract:'This is a very good curriculum. I support it 100%. Mind you, this curriculum is not competitive; it is competency-based — we nurture what is inside the learner, not around him.',memo:'Simultaneous strong endorsement + extensive structural critique in same interview; double-consciousness most clearly visible in T02; "100%" support despite documented failures'},
+  {pid:'T09',theme:'T7',code:'parental_8_4_4_mindset',level:'Semantic',extract:'Most of the parents are 8-4-4 parents. Now embracing CBC, you request for something and they feel as if the school is demanding too much. The learners have been told to come with items from home — these parents feel that the teacher is requesting for food.',memo:'Project-based learning friction made vivid (tomatoes/milk as science materials); parents\' residual examination-orientation producing active resistance to CBE pedagogical demands'},
+  {pid:'T08',theme:'T7',code:'pathway_promise_vs_reality',level:'Latent',extract:'Even if you\'re good in sports you cannot get an opportunity if you are not in a school. There is no way you can be situated somewhere. Nobody will come to your house and say you\'re very good at 500 meters.',memo:'T08\'s marginalised rural context exposes pathway logic as inaccessible without stable enrolment; talent recognised but structurally uncapturable'}
+];
+
+const themeColors = {T1:'#d4a843',T2:'#4e8fca',T3:'#4aab8a',T4:'#6b5bab',T5:'#c45b5b',T6:'#d47843',T7:'#6bab6b'};
+const themeNames = {T1:'Adaptation Ensembles',T2:'Inclusive Utility',T3:'Structural Tensions',T4:'Collaboration',T5:'Moral Vocation',T6:'Neurodivergence',T7:'CBE Paradox'};
+
+let rendered = false;
+function renderCS(){
+  if(rendered) return;
+  rendered = true;
+  filterCS();
+}
+
+function filterCS(){
+  const fp = document.getElementById('fp').value;
+  const fth = document.getElementById('fth').value;
+  const flv = document.getElementById('flv').value;
+  const rows = csData.filter(r =>
+    (!fp || r.pid === fp) &&
+    (!fth || r.theme === fth) &&
+    (!flv || r.level === flv)
+  );
+  const body = document.getElementById('cs-body');
+  const count = document.getElementById('cs-count');
+  count.textContent = `Showing ${rows.length} extract${rows.length!==1?'s':''}`;
+  body.innerHTML = rows.map(r => {
+    const tc = themeColors[r.theme]||'#d4a843';
+    const rgb = hexRGB(tc);
+    return `<tr>
+      <td><span class="ct-pid ${r.pid}">${r.pid}</span></td>
+      <td><div class="extract">"${esc(r.extract)}"</div></td>
+      <td><span class="code-tag" style="color:${tc}">${esc(r.code)}</span></td>
+      <td><span class="theme-tag" style="background:rgba(${rgb},.12);color:${tc}">${r.theme}: ${themeNames[r.theme]}</span></td>
+      <td><span class="code-tag" style="color:${r.level==='Latent'?'var(--a2)':'var(--a3)'}">${r.level}</span></td>
+      <td><div class="memo-cell">${esc(r.memo)}</div></td>
+    </tr>`;
+  }).join('');
+}
+
+function hexRGB(h){
+  const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h.replace('#',''));
+  return r?`${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)}`:'200,200,200';
+}
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>
