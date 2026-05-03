@@ -618,8 +618,6 @@ function emailResponses(){
 }
 
 function submitForm() {
-  // silent clipboard copy as backup
-  navigator.clipboard.writeText(collectResponses()).catch(() => {});
   // submit and show only the sheet status
   submitToSheet();
 }
