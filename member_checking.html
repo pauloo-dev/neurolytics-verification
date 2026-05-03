@@ -601,6 +601,8 @@ function copyResponses(){
   const txt=collectResponses();
   navigator.clipboard.writeText(txt).then(()=>{
     const msg=document.getElementById('copy-success');
+    msg.textContent='Responses copied to clipboard. You can now paste them into a WhatsApp message, email, or any other document.';
+    msg.style.color='';
     msg.style.display='block';
     setTimeout(()=>msg.style.display='none',5000);
   }).catch(()=>{
